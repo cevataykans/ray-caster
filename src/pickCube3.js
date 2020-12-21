@@ -70,6 +70,9 @@ var thetaLoc;
 
 var Index = 0;
 
+var camModelViewLoc;
+var camModelViewMatrix;
+var projectionMatrixLoc;
 
 function quad(a, b, c, d) {
 
@@ -198,6 +201,10 @@ gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     document.getElementById("ButtonY").onclick = function(){axis = yAxis;};
     document.getElementById("ButtonZ").onclick = function(){axis = zAxis;};
     document.getElementById("ButtonT").onclick = function(){flag = !flag};
+    document.getElementById( "raycastButton").onclick = () =>
+    {
+        generateImage();
+    };
     
     gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
        flatten(ambientProduct));
@@ -207,6 +214,9 @@ gl.bindFramebuffer(gl.FRAMEBUFFER, null);
        flatten(specularProduct) );	
     gl.uniform4fv(gl.getUniformLocation(program, "lightPosition"), 
        flatten(lightPosition) );
+
+    camModelViewLoc = gl.getUniformLocation(program, "camModelViewMatrix");
+    projectionMatrixLoc = gl.getUniformLocation(program, "projectionMatrix");
        
     gl.uniform1f(gl.getUniformLocation(program, 
        "shininess"),materialShininess);
@@ -214,6 +224,22 @@ gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.uniformMatrix4fv( gl.getUniformLocation(program, "projectionMatrix"),
        false, flatten(projection));
 
+    // FPS => official tutorial on mozilla tutorial: https://developer.mozilla.org/en-US/docs/Web/API/Pointer_Lock_API
+    setupCamera();
+    canvas.requestPointerLock = canvas.requestPointerLock ||
+                            canvas.mozRequestPointerLock;
+
+    document.exitPointerLock = document.exitPointerLock ||
+                           document.mozExitPointerLock;
+
+    canvas.onclick = function() {
+        canvas.requestPointerLock();
+    };
+
+    // Hook pointer lock state change events for different browsers
+    document.addEventListener('pointerlockchange', lockChangeAlert, false);
+    document.addEventListener('mozpointerlockchange', lockChangeAlert, false); 
+    // END FPS
 
     canvas.addEventListener("mousedown", function(event){
         
@@ -251,6 +277,7 @@ gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     render();
 }
 
+
 var render = function(){
     gl.clear( gl.COLOR_BUFFER_BIT );
     if(flag) theta[axis] += 2.0;
@@ -262,10 +289,18 @@ var render = function(){
     lightPosition[0] = Math.sin(0.01*time);
     lightPosition[1] = Math.sin(0.01*time);
     lightPosition[2] = Math.cos(0.01*time);
-    console.log(lightPosition[0]);
+    //console.log(lightPosition[0]);
     
     time += 1;
-    
+
+    eye = cameraTransform[ "pos"];
+    let lookDirection = getLookDirection( 100, 2);
+    lookDirection = add( eye, lookDirection);
+    camModelViewMatrix = lookAt(eye, lookDirection, vec3( realCamOrientation[1]));
+    projectionMatrix = perspective(camFovy, camAspect, camNearPers, camFarPers);
+    gl.uniformMatrix4fv( camModelViewLoc, false, flatten(camModelViewMatrix) );
+    gl.uniformMatrix4fv( projectionMatrixLoc, false, flatten(projectionMatrix) );
+
     gl.uniformMatrix4fv( gl.getUniformLocation(program,
             "modelViewMatrix"), false, flatten(modelView) );
 
@@ -273,4 +308,5 @@ var render = function(){
     gl.drawArrays( gl.TRIANGLES, 0, 36 );
 
     requestAnimFrame(render);
+    moveCamera();
 }

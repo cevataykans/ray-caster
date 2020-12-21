@@ -307,13 +307,34 @@ function mult( u, v )
         if ( u.length != v.length ) {
             throw "mult(): vectors are not the same dimension";
         }
-
         for ( var i = 0; i < u.length; ++i ) {
             result.push( u[i] * v[i] );
         }
 
         return result;
     }
+}
+
+function multMV( u, v)
+{
+    var result = new vec4();
+
+    for ( let i = 0; i < u.length; i++)
+    {
+        if ( u[i].length != v.length)
+        {
+            throw "multMV(): trying to add matrices of different dimensions";
+        }
+
+        var sum = 0;
+        for ( let j = 0; j < u[i].length; j++)
+        {
+            sum += u[i][j] * v[j];
+        }
+        result[ i] = sum;
+    }
+
+    return result;
 }
 
 //----------------------------------------------------------------------------
