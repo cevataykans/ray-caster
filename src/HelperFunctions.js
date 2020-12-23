@@ -7,15 +7,26 @@ function solveEquation( a, b, c)
     if ( discriminant == 0)
     {
         var intersectionPoint = ( -b ) / ( 2 * a );
-        intersectionPoints.push( intersectionPoint);
+
+        if ( intersectionPoint > 0)
+        {
+            intersectionPoints.push( intersectionPoint);
+        }
     }
     else if ( discriminant > 0) // intersects at only one point!
     {
        var intersectionPoint1 = ( (-b) + Math.sqrt( discriminant) ) / ( 2 * a);
        var intersectionPoint2 = ( (-b) - Math.sqrt( discriminant) ) / ( 2 * a);
+
+       if ( intersectionPoint1 > 0)
+       {
+            intersectionPoints.push( intersectionPoint1);
+       }
        
-       intersectionPoints.push( intersectionPoint1);
-       intersectionPoints.push( intersectionPoint2);
+       if ( intersectionPoint2 > 0)
+       {
+            intersectionPoints.push( intersectionPoint2);
+       }
     }
     return intersectionPoints;
 };
@@ -42,8 +53,8 @@ function efficientDistance( u, v)
 
 function InteractionResult( point, distance, normal, color)
 {
-    this.point = point;
-    this.distance = distance;
-    this.normal = normal;
-    this.color = color;
+    this.hitPoint = point;
+    this.hitDistance = distance;
+    this.hitNormal = normal;
+    this.hitColor = color;
 };

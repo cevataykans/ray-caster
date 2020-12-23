@@ -4,14 +4,18 @@ function Sphere( center, radius)
     this.radius = radius;
 
     // other details such as material, color etc.
-    this.color = vec4( 0.5, 0.5, 0.5, 1.0);
+    this.color = vec4( 1.0, 0.5, 0.5, 1.0);
 
 
     this.interactWithRay = function ( rayOrigin, rayDir)
     {
-        var a = dot( rayDir, rayDir);
-        var b = 2 * dot( rayDir, rayOrigin);
-        var c = dot( rayOrigin, rayOrigin) -  Math.pow( this.radius, 2);
+        //var a = dot( rayDir, rayDir);
+        var a = 1;
+        //var b = 2 * dot( rayDir, rayOrigin);
+        var OMinusC = subtract( rayOrigin, this.center);
+        var b = 2 * dot( rayDir, OMinusC);
+        //var c = dot( rayOrigin, rayOrigin) -  Math.pow( this.radius, 2);
+        var c = dot( OMinusC, OMinusC ) - Math.pow( this.radius, 2);
 
         var interactionParams = solveEquation( a, b, c);
         // add distance other information etc.
@@ -60,7 +64,7 @@ function Sphere( center, radius)
                 realHitPoint = hitPoint1;
                 realHitDistance = distance1;
             }
-            var realHitNormal = subtract( realHitPoint, this.center);
+            var realHitNormal = normalize( subtract( realHitPoint, this.center) );
             var hitColor = this.color;
 
             var interactionResult = new InteractionResult( realHitPoint, realHitDistance, realHitNormal, hitColor);

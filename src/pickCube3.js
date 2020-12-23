@@ -160,10 +160,10 @@ window.onload = function init() {
     console.log( efficientDistance( [ 2, 3, 4, 0], [4, -2, 1, 0]));
     console.log("DISTANCE CALCULATOR TEST END");
     console.log( "SPHERE TEST");
-    var testSphere = new Sphere( vec4( 0, 0, 10, 0), 5);
-    var rayOrigin = vec4( 0, 0, 0, 0);
-    var rayDir = vec4( 0, 0, 0, 1, 0);
-    console.log( testSphere.interactWithRay( rayOrigin, rayDir));
+    // var testSphere = new Sphere( vec4( 0, 0, 10, 0), 1);
+    // var rayOrigin = vec4( 0, 0, 0, 0);
+    // var rayDir = vec4( 0, 0, 1, 0);
+    // console.log( testSphere.interactWithRay( rayOrigin, rayDir));
     console.log( "SPHERE TEST END");
 
     var ctx = canvas.getContext("experimental-webgl", {preserveDrawingBuffer: true});
@@ -290,7 +290,8 @@ gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     document.getElementById("ButtonT").onclick = function(){flag = !flag};
     document.getElementById( "raycastButton").onclick = () =>
     {
-        generateImage();
+        var raycaster = new RayCaster();
+        raycaster.castRays();
     };
     
     gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),

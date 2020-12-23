@@ -10,10 +10,12 @@ var camRight = 15.0;
 var camYTop = 15.0;
 var camBottom = -15.0;
 
-var camFovy = 60.0;  // Field-of-view in Y direction angle (in degrees)
+var camFovy = 90.0;  // Field-of-view in Y direction angle (in degrees)
 var camAspect = 1.0;       // Viewport aspect ratio
 var camNearPers = 0;
 var camFarPers = 100;
+
+var camSensitivity = 50.0;
 
 var eye;
 const camAt = vec3(0.0, 0.0, 0.0);
@@ -217,8 +219,8 @@ function lockChangeAlert() {
 
 function updateCameraAngle(e)
 {
-    cameraTransform[ "rot"][ 1] += ( e.movementX / 100.0);
-    cameraTransform[ "rot"][ 0] -= ( e.movementY / 100.0);
+    cameraTransform[ "rot"][ 1] += ( e.movementX / camSensitivity);
+    cameraTransform[ "rot"][ 0] -= ( e.movementY / camSensitivity);
 
     realCamOrientation = mult( rotate(cameraTransform[ "rot"][ 0], 1, 0, 0), cameraOrientation);
     realCamOrientation = mult( rotate(cameraTransform[ "rot"][ 1], 0, 1, 0), realCamOrientation);
