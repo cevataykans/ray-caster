@@ -29,6 +29,8 @@ varying vec2 fTexCoord;
 
 uniform mat4 camModelViewMatrix;
 
+uniform mat4 camModelViewMatrix;
+
 uniform vec4 ambientProduct, diffuseProduct, specularProduct;
 uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
@@ -67,7 +69,10 @@ void main()
 	specular = vec4(0.0, 0.0, 0.0, 1.0);
     } 
 
+<<<<<<< HEAD
     fTexCoord = vTexCoord;
+=======
+>>>>>>> 54522bdab98525422c7b0304eb94aad7cfd6890b
     gl_Position = projectionMatrix * camModelViewMatrix * modelViewMatrix * vPosition;
     fColor = ambient + diffuse +specular;
     
@@ -99,6 +104,9 @@ main()
 <div>
 <canvas id="gl-canvas" width="512" height="512">
 Oops ... your browser doesn't support the HTML5 canvas element
+</canvas>
+<canvas id="rayCastCanvas" width="512" height="512">
+    Oops ... your browser doesn't support the HTML5 canvas element
 </canvas>
 </div>
 <div>

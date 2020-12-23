@@ -307,13 +307,44 @@ function mult( u, v )
         if ( u.length != v.length ) {
             throw "mult(): vectors are not the same dimension";
         }
-
         for ( var i = 0; i < u.length; ++i ) {
             result.push( u[i] * v[i] );
         }
 
         return result;
     }
+}
+
+function multMV( u, v)
+{
+    var result = new vec4();
+
+    for ( let i = 0; i < u.length; i++)
+    {
+        if ( u[i].length != v.length)
+        {
+            throw "multMV(): trying to add matrices of different dimensions";
+        }
+
+        var sum = 0;
+        for ( let j = 0; j < u[i].length; j++)
+        {
+            sum += u[i][j] * v[j];
+        }
+        result[ i] = sum;
+    }
+
+    return result;
+}
+
+function multScalar( u, num)
+{
+    var result = vec4();
+    for ( let i = 0; i < u.length; i++)
+    {
+        result[ i] = u[ i] * num;
+    }
+    return result;
 }
 
 //----------------------------------------------------------------------------
@@ -382,6 +413,14 @@ function scale( x, y, z )
 
     return result;
 }
+
+function scale4(a, b, c) { // WHAT IZ DIZ FUNCTION??? MOVE TO MV.JS
+    var result = mat4();
+    result[0][0] = a;
+    result[1][1] = b;
+    result[2][2] = c;
+    return result;
+ };
 
 //----------------------------------------------------------------------------
 //
