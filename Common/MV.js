@@ -337,6 +337,16 @@ function multMV( u, v)
     return result;
 }
 
+function multScalar( u, num)
+{
+    var result = vec4();
+    for ( let i = 0; i < u.length; i++)
+    {
+        result[ i] = u[ i] * num;
+    }
+    return result;
+}
+
 //----------------------------------------------------------------------------
 //
 //  Basic Transformation Matrix Generators

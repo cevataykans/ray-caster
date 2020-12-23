@@ -1,5 +1,5 @@
-var imageWidth = 720;
-var imageHeight = 720;
+var imageWidth = 512;
+var imageHeight = 512;
 var traceDepth = 3;
 var shapes = [ {} ]; //TODO make it oop!
 var numOfShapes = shapes.length; //TODO make it oop!
@@ -10,6 +10,7 @@ console.log( "END");
 
 function generateImage()
 {
+    var pixelList = [];
 
     function setupRaycaster()
     {
@@ -18,7 +19,7 @@ function generateImage()
 
     function castRays()
     {
-        var pixelList = [];
+        pixelList = [];
         for( let i = 0; i < imageHeight; i++)
         {
             for ( let j = 0; j < imageWidth; j++)
@@ -56,12 +57,13 @@ function generateImage()
                 var rayDirWorld = subtract( rayPWorld, rayOriginWorld);
                 rayDirWorld = normalize( rayDirWorld);
 
-                //var colorAtPixel = traceRay( ray, normalize(ray), traceDepth);
-                /*if ( colorAtPixel)
+                var colorAtPixel = traceRay( rayOriginWorld, rayDirWorld, traceDepth);
+                if ( colorAtPixel)
                 {
                     //TODO store color!
-                    console.log( colorAtPixel);
-                }*/
+                    //console.log( colorAtPixel);
+                    pixelList.push( colorAtPixel);
+                }
 
                 if ( (i == 0 && j == 0) || (i == 0 && j == imageWidth - 1) || (i == imageHeight - 1 && j == 0) || (i == imageHeight - 1 && j == imageWidth - 1) )
                 {
@@ -69,8 +71,8 @@ function generateImage()
                     // console.log( rayPWorld);
                     // console.log( "Ray Origin world: ");
                     // console.log( rayOriginWorld);
-                    console.log( "DIRECTION");
-                    console.log( rayDirWorld);
+                    // console.log( "DIRECTION");
+                    // console.log( rayDirWorld);
                 }
                 // return;
             }
@@ -98,6 +100,8 @@ function generateImage()
                 // return background color!
                 return new vec3( 0, 0, 0, 1);
             }
+
+            return new vec3( 0, 0, 0, 1);
     
             // define hit color,
     
@@ -151,4 +155,6 @@ function generateImage()
 
     setupRaycaster();
     castRays();
+    console.log( "Image dim is:" + 512 * 512);
+    console.log( pixelList.length);
 };
