@@ -41,8 +41,9 @@ var keyDowns = {
 var cameraTransform = {
     "pos": [ 0.0, 0.0, -5],
     "rot": [ 0.0, 0.0, 0.0], 
-    "scale": [ 1, 1, 1]
+    "scale": [ 1, 1, 1],
 };
+
 var cameraTFUIElements = [
     [],
     []

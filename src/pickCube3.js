@@ -73,6 +73,7 @@ var Index = 0;
 var camModelViewLoc;
 var camModelViewMatrix;
 var projectionMatrixLoc;
+var projectionMatrix;
 
 function quad(a, b, c, d) {
 
@@ -116,6 +117,18 @@ function colorCube()
 
 window.onload = function init() {
     canvas = document.getElementById( "gl-canvas" );
+
+    canvas.addEventListener("mousedown", getPosition, false);
+
+    function getPosition(event)
+    {
+    var x = event.x;
+    var y = event.y;
+
+    var canvas = document.getElementById("canvas");
+
+        console.log( "x:" + x + " y:" + y);
+    }
     
     var ctx = canvas.getContext("experimental-webgl", {preserveDrawingBuffer: true});
     

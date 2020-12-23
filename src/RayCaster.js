@@ -3,19 +3,17 @@ var imageHeight = 720;
 var traceDepth = 3;
 var shapes = [ {} ]; //TODO make it oop!
 var numOfShapes = shapes.length; //TODO make it oop!
-var fovAngle = 60.0;
 
-var cameraToWorld;
+var camTf;
+var projectionMat;
 console.log( "END");
 
 function generateImage()
 {
-    var rayWorldOrigin;
-    var rayWorlDir;
 
     function setupRaycaster()
     {
-        cameraToWorld = camModelViewMatrix;
+        camTf = cameraTransform;
     };
 
     function castRays()
@@ -27,21 +25,36 @@ function generateImage()
             {
                 var rayP = buildRay( j, i);
                 var rayOrigin = vec4( 0, 0, 0, 0);
-                // console.log( "Ray P:");
-                // console.log( rayP);
-                // console.log( "Ray Origin:: ");
-                // console.log( rayOrigin);
 
-                // console.log( "Cam to world");
-                var rayPWorld = multMV( cameraToWorld, rayP);
-                var rayOriginWorld = multMV( cameraToWorld, rayOrigin);
-                // console.log( "Ray P World:");
-                // console.log( rayPWorld);
-                // console.log( "Ray Origin world: ");
-                // console.log( rayOriginWorld);
+                var rotateAroundX = rotate( camTf["rot"][0], [1, 0, 0]);
+                var rotateAroundY = rotate( camTf["rot"][1], [0, 1, 0]);
+                var rotateAroundZ = rotate( camTf["rot"][2], [0, 0, 1]);
+                // console.log( "ROTATE X");
+                // console.log( rotateAroundX);
+                // console.log( "ROTATE Y");
+                // console.log( rotateAroundY);
+                // console.log( "ROTATE Z");
+                // console.log( rotateAroundZ);
 
-                //var rayDirWorld = subtract( rayPWorld, rayOriginWorld);
-                //rayDirWorld = normalize( rayDirWorld);
+                var rayPWorld = rayP;
+                rayPWorld = multMV( rotateAroundX, rayPWorld);
+                rayPWorld = multMV( rotateAroundY, rayPWorld);
+                rayPWorld = multMV( rotateAroundZ, rayPWorld);
+                rayPWorld = add( [...camTf["pos"], 0 ], rayPWorld);
+
+                var rayOriginWorld = rayOrigin;
+                rayOriginWorld = multMV( rotateAroundX, rayOriginWorld);
+                rayOriginWorld = multMV( rotateAroundY, rayOriginWorld);
+                rayOriginWorld = multMV( rotateAroundZ, rayOriginWorld);
+                rayOriginWorld = add( [...camTf["pos"], 0 ], rayOriginWorld);
+                
+                //console.log( "CAM TF POS");
+                //console.log( camTf["pos"]);
+                //console.log( "FOUND ORIGIN");
+                //console.log( rayOriginWorld);
+
+                var rayDirWorld = subtract( rayPWorld, rayOriginWorld);
+                rayDirWorld = normalize( rayDirWorld);
 
                 //var colorAtPixel = traceRay( ray, normalize(ray), traceDepth);
                 /*if ( colorAtPixel)
@@ -52,14 +65,14 @@ function generateImage()
 
                 if ( (i == 0 && j == 0) || (i == 0 && j == imageWidth - 1) || (i == imageHeight - 1 && j == 0) || (i == imageHeight - 1 && j == imageWidth - 1) )
                 {
-                    console.log( "CAM TO WORLD");
-                    console.log( cameraToWorld);
-                    console.log( "Ray P World:");
-                    console.log( rayPWorld);
-                    console.log( "Ray Origin world: ");
-                    console.log( rayOriginWorld);
+                    // console.log( "Ray P World:");
+                    // console.log( rayPWorld);
+                    // console.log( "Ray Origin world: ");
+                    // console.log( rayOriginWorld);
+                    console.log( "DIRECTION");
+                    console.log( rayDirWorld);
                 }
-                return;
+                // return;
             }
         }
     
@@ -67,15 +80,15 @@ function generateImage()
         {   
             //TODO build ray and return at pixel to world coordinate
             var aspectRatio = imageWidth / imageHeight;
-            var fovAngleEffect = Math.tan( (fovAngle / 2) * Math.PI / 180);
+            var fovAngleEffect = Math.tan( (camFovy / 2) * Math.PI / 180);
     
             var pixelNDCx = (pixelX + 0.5) / imageWidth;
             var pixelNDCy = (pixelY + 0.5) / imageHeight;
     
-            var pixelScreenX = ((2 * pixelNDCx) - 1 ) * aspectRatio * fovAngleEffect;
+            var pixelScreenX = -((2 * pixelNDCx) - 1 ) * aspectRatio * fovAngleEffect;
             var pixelScreenY = 1- (2 * pixelNDCy) * fovAngleEffect;
     
-            return new vec4( pixelScreenX, pixelScreenY, -1, 0);
+            return new vec4( pixelScreenX, pixelScreenY, 1, 0);
         };    
     
         function traceRay( rayOrigin, rayDir, traceDepth)

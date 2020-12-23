@@ -404,6 +404,14 @@ function scale( x, y, z )
     return result;
 }
 
+function scale4(a, b, c) { // WHAT IZ DIZ FUNCTION??? MOVE TO MV.JS
+    var result = mat4();
+    result[0][0] = a;
+    result[1][1] = b;
+    result[2][2] = c;
+    return result;
+ };
+
 //----------------------------------------------------------------------------
 //
 //  ModelView Matrix Generators
