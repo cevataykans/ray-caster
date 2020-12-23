@@ -15,6 +15,7 @@
 <script type="text/javascript" src="camera.js"></script>
 <script type="text/javascript" src="pickCube3.js"></script>
 <script type="text/javascript" src="RayCaster.js"></script>
+<script type="text/javascript" src="BasicTester.js"></script>
 <script type="text/javascript" src="TextureMapper.js"></script>
 
 <script id="vertex-shader" type="x-shader/x-vertex">
@@ -26,8 +27,6 @@ attribute  vec2 vTexCoord;
 
 varying vec4 fColor;
 varying vec2 fTexCoord;
-
-uniform mat4 camModelViewMatrix;
 
 uniform mat4 camModelViewMatrix;
 
@@ -69,10 +68,7 @@ void main()
 	specular = vec4(0.0, 0.0, 0.0, 1.0);
     } 
 
-<<<<<<< HEAD
     fTexCoord = vTexCoord;
-=======
->>>>>>> 54522bdab98525422c7b0304eb94aad7cfd6890b
     gl_Position = projectionMatrix * camModelViewMatrix * modelViewMatrix * vPosition;
     fColor = ambient + diffuse +specular;
     

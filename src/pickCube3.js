@@ -41,7 +41,7 @@ var vertexColors = [
 
 var time = 0;
 
-var lightPosition = vec4(0.0, 1.0, 0.0, 0.0 );
+var lightPosition = vec4(-1.0, -1.0, -1.0, 0.0 );
 var lightAmbient = vec4(0.2, 0.2, 0.2, 1.0 );
 var lightDiffuse = vec4( 1.0, 1.0, 1.0, 1.0 );
 var lightSpecular = vec4( 1.0, 1.0, 1.0, 1.0 );
@@ -85,27 +85,22 @@ function quad(a, b, c, d) {
 
      pointsArray.push(vertices[a]); 
      normalsArray.push(normal); 
-     texCoordsArray.push(texCoord[0]);
-
+     colorsArray.push(vertexColors[a]);
      pointsArray.push(vertices[b]); 
      normalsArray.push(normal); 
-     texCoordsArray.push(texCoord[1]);
-
+     colorsArray.push(vertexColors[a]);
      pointsArray.push(vertices[c]); 
      normalsArray.push(normal);  
-     texCoordsArray.push(texCoord[2]);
-
+     colorsArray.push(vertexColors[a]); 
      pointsArray.push(vertices[a]);  
      normalsArray.push(normal); 
-     texCoordsArray.push(texCoord[0]);
-
+     colorsArray.push(vertexColors[a]);
      pointsArray.push(vertices[c]); 
      normalsArray.push(normal); 
-     texCoordsArray.push(texCoord[2]);
-
+     colorsArray.push(vertexColors[a]);
      pointsArray.push(vertices[d]); 
      normalsArray.push(normal);  
-     texCoordsArray.push(texCoord[3]);
+     colorsArray.push(vertexColors[a]);  
 }
 
 
@@ -125,7 +120,6 @@ window.onload = function init() {
 
     // experimental
     canvas.addEventListener("mousedown", getPosition, false);
-
     function getPosition(event)
     {
     var x = event.x;
@@ -133,40 +127,9 @@ window.onload = function init() {
 
         console.log( "x:" + x + " y:" + y);
     }
+    // end experimental
     
-    // var img = new Image();
-    // img.crossOrigin = 'anonymous';
-    // img.src = 'iamgeToWriteTo.png';
-
-    // var myCanvas = document.getElementById('rayCastCanvas');
-    // var ctx = myCanvas.getContext('2d');
-
-    // img.onload = function() {
-    //     ctx.drawImage(img, 0, 0);
-    // };
-
-
-    //
-
-    console.log( "EUATION SOLVER TEST");
-    console.log( solveEquation( 1, -4, 4));
-    console.log( solveEquation( 1, -5, 4));
-    console.log( solveEquation( 1, 0, -4));
-    console.log( solveEquation( 1, -1, 4));
-    console.log( "EQUATION SOLVER TEST END");
-    console.log( "DISTANCE CALCULATOR TEST")
-    console.log( realDistance( [ 3, 6, 0, 0], [6, 10, 0, 0]));
-    console.log( realDistance( [ 1, 1, 1, 0], [1, 5, 1, 0]));
-    console.log( efficientDistance( [ 2, 3, 4, 0], [4, -2, 1, 0]));
-    console.log("DISTANCE CALCULATOR TEST END");
-    console.log( "SPHERE TEST");
-    // var testSphere = new Sphere( vec4( 0, 0, 10, 0), 1);
-    // var rayOrigin = vec4( 0, 0, 0, 0);
-    // var rayDir = vec4( 0, 0, 1, 0);
-    // console.log( testSphere.interactWithRay( rayOrigin, rayDir));
-    console.log( "SPHERE TEST END");
-
-    var ctx = canvas.getContext("experimental-webgl", {preserveDrawingBuffer: true});
+    var ctx = canvas.getContext("experimental-webgl", {preserveDrawingBuffer: true}); // delete if not used
     
     gl = WebGLUtils.setupWebGL( canvas );
     if ( !gl ) { alert( "WebGL isn't available" ); }
@@ -201,7 +164,7 @@ window.onload = function init() {
    //var status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
    //if(status != gl.FRAMEBUFFER_COMPLETE) alert('Frame Buffer Not Complete');
 
-gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
     //
     //  Load shaders and initialize attribute buffers
@@ -236,49 +199,11 @@ gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vPosition);
 
-    var tBuffer = gl.createBuffer();
-    gl.bindBuffer( gl.ARRAY_BUFFER, tBuffer);
-    gl.bufferData( gl.ARRAY_BUFFER, flatten(texCoordsArray), gl.STATIC_DRAW );
-    var vTexCoord = gl.getAttribLocation( program, "vTexCoord");
-    gl.vertexAttribPointer(vTexCoord, 2, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(vTexCoord);
-
-    var imageSrc = document.getElementById("texImageMenu");
-    imageSrc.addEventListener('change', function() {
-        let selection = imageSrc.value;
-        var img = document.createElement('img'); 
-        //img.visibility = "hidden";
-        if (selection == "No Image")
-        {
-            configureTextureNoImage(image2);
-        }
-        else
-        {
-            switch(selection)
-            {
-                case "Default":
-                    img.src = "Default.png";
-                    break;
-                case "1080x1080":
-                    img.src = "1080x1080.jpg";
-                    break;
-                case "Logo":
-                    img.src = "Logo.gif";
-                    break;
-                case "Rainbow":
-                    img.src = "Rainbow.jpg";
-                    break;
-            }
-            configureTextureImage(img);
-        }
-    });
-    configureTextureNoImage(image2);
-
     thetaLoc = gl.getUniformLocation(program, "theta");
     
-    viewerPos = vec3(0.0, 0.0, 20.0 );
+    viewerPos = vec3(0.0, 0.0, -20.0 );
 
-    projection = ortho(1, -1, 1, -1, -100, 100);
+    projection = ortho(-1, 1, -1, 1, -100, 100);
     
     ambientProduct = mult(lightAmbient, materialAmbient);
     diffuseProduct = mult(lightDiffuse, materialDiffuse);
@@ -362,6 +287,7 @@ gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
     }); 
           
+    executeTests();
     render();
 }
 
@@ -374,12 +300,10 @@ var render = function(){
     modelView = mult(modelView, rotate(theta[yAxis], [0, 1, 0] ));
     modelView = mult(modelView, rotate(theta[zAxis], [0, 0, 1] ));
 
-    // lightPosition[0] = Math.cos(0.01*time);
-    // lightPosition[1] = Math.sin(0.01*time);
-    // lightPosition[2] = Math.cos(0.01*time);
-    // //console.log(lightPosition[0]);
-
-    // gl.uniform4fv(gl.getUniformLocation(program, "lightPosition"), flatten(lightPosition) );
+    lightPosition[0] = Math.sin(0.01*time);
+    lightPosition[1] = Math.sin(0.01*time);
+    lightPosition[2] = Math.cos(0.01*time);
+    //console.log(lightPosition[0]);
     
     time += 1;
 
