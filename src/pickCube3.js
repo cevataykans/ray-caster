@@ -42,7 +42,7 @@ var vertexColors = [
 const sphere1 = new Sphere(vec3(0,2.5,0), 1);
 const cone1 = new Cone(vec3(0,0,0), 1, 3);
 
-var shapes = [ new Sphere( vec4( 0, 0, 0, 0), 1) ];//new Square( vec4( 0, 0, 0, 0)) ]; //TODO make it oop!
+var shapes = [ new Sphere( vec4( 0, 0, 0, 0), 1) ]; //TALHA IF YOU WANT YOUR SHAPES TO BE RENDERED YOU NEED TO PUT THEM INTO THIS LIST
 var square = new Square( vec4( 2, 0, 0, 0));
 square.addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ), vec4( 0.5, 0.5, -0.5 ) ); // front
 square.addTriangle( vec4( -0.5, 0.5, -0.5 ), vec4( 0.5, 0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ) ); // front complementary

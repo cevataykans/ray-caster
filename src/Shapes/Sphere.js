@@ -1,5 +1,7 @@
-class Sphere {
-    constructor(center = vec3(0, 0, 0), radius = 1) {
+class Sphere 
+{
+    constructor(center = vec3(0, 0, 0), radius = 1) 
+    {
         this.center = center;
         this.radius = radius;
         this.points = [];
