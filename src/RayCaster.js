@@ -1,9 +1,6 @@
 var imageWidth = 512;
 var imageHeight = 512;
 var traceDepth = 1;
-var shapes = [ new Sphere( vec4( 0, 0, 0, 0), 1) ]; //TODO make it oop!
-var numOfShapes = shapes.length; //TODO make it oop!
-
 
 var hitCount = 0;
 var camTf;
@@ -14,14 +11,8 @@ function RayCaster()
 {
     this.pixelList = [];
 
-    this.setupRaycaster = function()
-    {
-        camTf = cameraTransform;
-    };
-
     this.castRays = function()
     {
-        this.setupRaycaster();
         this.pixelList = [];
         hitCount = 0;
         for( let i = 0; i < imageHeight; i++)
@@ -31,9 +22,9 @@ function RayCaster()
                 var rayP = this.buildRay( j, i);
                 var rayOrigin = vec4( 0, 0, 0, 0);
 
-                var rotateAroundX = rotate( camTf["rot"][0], [1, 0, 0]);
-                var rotateAroundY = rotate( camTf["rot"][1], [0, 1, 0]);
-                var rotateAroundZ = rotate( camTf["rot"][2], [0, 0, 1]);
+                // var rotateAroundX = rotate( camTf["rot"][0], [1, 0, 0]);
+                // var rotateAroundY = rotate( camTf["rot"][1], [0, 1, 0]);
+                // var rotateAroundZ = rotate( camTf["rot"][2], [0, 0, 1]);
                 // console.log( "ROTATE X");
                 // console.log( rotateAroundX);
                 // console.log( "ROTATE Y");
@@ -42,16 +33,16 @@ function RayCaster()
                 // console.log( rotateAroundZ);
 
                 var rayPWorld = rayP;
-                rayPWorld = multMV( rotateAroundX, rayPWorld);
-                rayPWorld = multMV( rotateAroundY, rayPWorld);
-                rayPWorld = multMV( rotateAroundZ, rayPWorld);
-                rayPWorld = add( [...camTf["pos"], 0 ], rayPWorld);
+                // rayPWorld = multMV( rotateAroundX, rayPWorld);
+                // rayPWorld = multMV( rotateAroundY, rayPWorld);
+                // rayPWorld = multMV( rotateAroundZ, rayPWorld);
+                rayPWorld = add( [...camPos, 0 ], rayPWorld);
 
                 var rayOriginWorld = rayOrigin;
-                rayOriginWorld = multMV( rotateAroundX, rayOriginWorld);
-                rayOriginWorld = multMV( rotateAroundY, rayOriginWorld);
-                rayOriginWorld = multMV( rotateAroundZ, rayOriginWorld);
-                rayOriginWorld = add( [...camTf["pos"], 0 ], rayOriginWorld);
+                // rayOriginWorld = multMV( rotateAroundX, rayOriginWorld);
+                // rayOriginWorld = multMV( rotateAroundY, rayOriginWorld);
+                // rayOriginWorld = multMV( rotateAroundZ, rayOriginWorld);
+                rayOriginWorld = add( [...camPos, 0 ], rayOriginWorld);
                 
                 // console.log( "CAM TF POS");
                 // console.log( camTf["pos"]);
@@ -74,15 +65,15 @@ function RayCaster()
                 //if ( (i == 0 && j == 0) || (i == 0 && j == imageWidth - 1) || (i == imageHeight - 1 && j == 0) || (i == imageHeight - 1 && j == imageWidth - 1) )
                 if ( i ==  Math.floor( (imageWidth / 2) ) && j == Math.floor( (imageHeight / 2) ) )
                 {
-                    console.log( "CAM TF POS");
-                    console.log( camTf["pos"]);
+                    // console.log( "CAM TF POS");
+                    // console.log( camPos);
 
-                    console.log( "Ray P World:");
-                    console.log( rayPWorld);
-                    console.log( "Ray Origin world: ");
-                    console.log( rayOriginWorld);
-                    console.log( "DIRECTION");
-                    console.log( rayDirWorld);
+                    // console.log( "Ray P World:");
+                    // console.log( rayPWorld);
+                    // console.log( "Ray Origin world: ");
+                    // console.log( rayOriginWorld);
+                    // console.log( "DIRECTION");
+                    // console.log( rayDirWorld);
                 }
                 // return;
 
@@ -98,17 +89,17 @@ function RayCaster()
 
     this.buildRay = function( pixelX, pixelY)
     {   
-        //TODO build ray and return at pixel to world coordinate
+        // build ray and return at pixel to world coordinate
         var aspectRatio = imageWidth / imageHeight;
-        var fovAngleEffect = Math.tan( (camFovy / 2) * Math.PI / 180);
+        var fovAngleEffect = Math.tan( (camFovy / 2) * (Math.PI / 180));
 
         var pixelNDCx = (pixelX + 0.5) / imageWidth;
         var pixelNDCy = (pixelY + 0.5) / imageHeight;
 
         var pixelScreenX = ((2 * pixelNDCx) - 1 ) * aspectRatio * fovAngleEffect;
-        var pixelScreenY = 1- (2 * pixelNDCy) * fovAngleEffect;
+        var pixelScreenY = (1 - (2 * pixelNDCy)) * fovAngleEffect;
 
-        return new vec4( pixelScreenX, pixelScreenY, 1, 0);
+        return new vec4( -pixelScreenX, pixelScreenY, 1, 0);
     };    
 
 
@@ -120,42 +111,43 @@ function RayCaster()
             return vec4( 0, 0, 0, 1);
         }
 
-        // define hit color,
-
         //TODO trace the ray!
-        var closestObjectDetails = this.findClosestIntersectWithShape( rayOrigin, rayDir);
-        if ( closestObjectDetails)
+        var closestObject = this.findClosestIntersectWithShape( rayOrigin, rayDir);
+        if ( closestObject)
         {
             hitCount++;
-            return this.shadePoint( rayOrigin, rayDir, closestObjectDetails);
+            return this.shadePoint( rayOrigin, rayDir, closestObject.shape.getShapeSurfaceData( closestObject.hitpoint, rayDir) );
         }
         else
         {
-            //TODO return outer space color; 
+            //return outer space color; 
             return vec4( 0, 0, 0, 1);
         }
     };
 
     this.findClosestIntersectWithShape = function( rayOrigin, rayDir)
     {
-        //TODO find closest interaction point with and 
+        //find closest interaction point with and 
         var maxDistance = Number.MAX_SAFE_INTEGER;
-        var closestShapeDetails = null;
-        for ( let curShapeIndex = 0; curShapeIndex < numOfShapes; curShapeIndex++)
+        var closestShape = null;
+        var shapeIntersectionData = null;
+        var intersectionDataToReturn = null;
+        for ( let curShapeIndex = 0; curShapeIndex < shapes.length; curShapeIndex++)
         {
-            var shapeIntersectionData = shapes[ curShapeIndex].interactWithRay( rayOrigin, rayDir); // RETURN intersection detauils such as distance, surface normal, pointer to surface color etc.
+            shapeIntersectionData = shapes[ curShapeIndex].interactWithRay( rayOrigin, rayDir);
             if ( shapeIntersectionData != null)
             {
+                // check if this intersection is closer than the max distance, if so, set the closest object with its insersection details!
                 if ( shapeIntersectionData.hitDistance < maxDistance)
                 {
-                    closestShapeDetails = shapeIntersectionData;
+                    closestShape = shapes[ curShapeIndex];
                     maxDistance = shapeIntersectionData.hitDistance;
+                    intersectionDataToReturn = shapeIntersectionData;
                 }
             }
-            // TODO check if this intersection is closer than the max distance, if so, set the closest object with its insersection details!
         }
         // return shape with intersection details!
-        return closestShapeDetails;
+        return intersectionDataToReturn ? { shape: closestShape, hitpoint: intersectionDataToReturn.hitPoint } : null;
     };
 
     this.shadePoint = function(rayOrigin, rayDir, shapeToShadeDetails) // return color emitted by surface in ray interaction

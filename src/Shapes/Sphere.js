@@ -9,7 +9,23 @@ class Sphere {
         this.sectorCount = 20;
 
         // other details such as material, color etc.
-        this.color = vec4(1.0, 0.5, 0.5, 1.0);
+        this.color = vec4( 1.0, 0.5, 0.5, 1.0);
+
+        this.getShapeSurfaceData = function( hitpoint, rayDir)
+        {
+            var normal = normalize( subtract( hitpoint, this.center) );
+            var colorToReturn = [];
+            for ( let i = 0; i < 3; i++)
+            {
+                colorToReturn.push( this.color[ i] * Math.max( 0, dot( normal, multScalar( rayDir, -1) )) );
+            }
+            colorToReturn.push( 1);
+           
+            var texture = vec2();
+            texture[ 0] =  (1 + (Math.atan2( hitpoint[ 2], hitpoint[0] ) / Math.PI) ) * 0.5;
+            texture[ 1] = Math.acos( hitpoint[ 1]) / Math.PI;
+            return new SurfaceData( normal, colorToReturn, texture);
+        };
 
         this.calculatePoints = function () {
             var spherePointIndices = [];
@@ -119,52 +135,50 @@ class Sphere {
             //var a = dot( rayDir, rayDir);
             var a = 1;
             //var b = 2 * dot( rayDir, rayOrigin);
-            var OMinusC = subtract(rayOrigin, this.center);
-            var b = 2 * dot(rayDir, OMinusC);
+            var OMinusC = subtract( rayOrigin, this.center);
+            var b = 2 * dot( rayDir, OMinusC);
             //var c = dot( rayOrigin, rayOrigin) -  Math.pow( this.radius, 2);
-            var c = dot(OMinusC, OMinusC) - Math.pow(this.radius, 2);
+            var c = dot( OMinusC, OMinusC ) - Math.pow( this.radius, 2);
 
-            var interactionParams = solveEquation(a, b, c);
+            var interactionParams = solveEquation( a, b, c);
             // add distance other information etc.
-            if (interactionParams.length === 0) // no intersection, return null!
+            if ( interactionParams.length === 0) // no intersection, return null!
             {
                 return null;
             }
-            else if (interactionParams.length === 1) {
+            else if ( interactionParams.length === 1)
+            {
                 // Find the real hit point with the returned parameter t
-                var hitPoint = interactionParams[0];
-
-                hitPoint = add(rayOrigin, multScalar(rayDir, hitPoint));
+                var hitPoint = interactionParams[ 0];
+                hitPoint = add( rayOrigin, multScalar( rayDir, hitPoint ) );
 
                 // do not compare points, find normal, distance and other required details.
-                var hitDistance = realDistance(rayOrigin, hitPoint);
-                var hitNormal = normalize(subtract(hitPoint, this.center));
-                var hitColor = this.color;
-
-                var interactionResult = new InteractionResult(hitPoint, hitDistance, hitNormal, hitColor);
+                var hitDistance = efficientDistance( rayOrigin, hitPoint);
+                var interactionResult = new InteractionResult( hitPoint, hitDistance);
                 return interactionResult;
             }
-            else if (interactionParams.length === 2) {
+            else if ( interactionParams.length === 2)
+            {
                 // Find the real hit point with the returned parameter t
-                var hitPoint1 = interactionParams[0];
-                var hitPoint2 = interactionParams[1];
+                var hitPoint1 = interactionParams[ 0];
+                var hitPoint2 = interactionParams[ 1];
 
-                hitPoint1 = add(rayOrigin, multScalar(rayDir, hitPoint1));
-                hitPoint2 = add(rayOrigin, multScalar(rayDir, hitPoint2));
+                hitPoint1 = add( rayOrigin, multScalar( rayDir, hitPoint1 ) );
+                hitPoint2 = add( rayOrigin, multScalar( rayDir, hitPoint2 ) );
 
                 // compare points, find normal, distance and other required details.
-                var distance1 = realDistance(rayOrigin, hitPoint1);
-                var distance2 = realDistance(rayOrigin, hitPoint2);
+                var distance1 = efficientDistance( rayOrigin, hitPoint1);
+                var distance2 = efficientDistance( rayOrigin, hitPoint2);
 
                 var realHitPoint;
                 var realHitDistance;
-                var realHitNormal;
-                if (distance1 > distance2) {
+                if ( distance1 > distance2 )
+                {
                     realHitPoint = hitPoint2;
                     realHitDistance = distance2;
                 }
-
-                else {
+                else 
+                {
                     realHitPoint = hitPoint1;
                     realHitDistance = distance1;
                 }

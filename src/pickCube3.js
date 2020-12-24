@@ -42,6 +42,22 @@ var vertexColors = [
 const sphere1 = new Sphere(vec3(0,2.5,0), 1);
 const cone1 = new Cone(vec3(0,0,0), 1, 3);
 
+var shapes = [ new Sphere( vec4( 0, 0, 0, 0), 1) ];//new Square( vec4( 0, 0, 0, 0)) ]; //TODO make it oop!
+var square = new Square( vec4( 2, 0, 0, 0));
+square.addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ), vec4( 0.5, 0.5, -0.5 ) ); // front
+square.addTriangle( vec4( -0.5, 0.5, -0.5 ), vec4( 0.5, 0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ) ); // front complementary
+square.addTriangle( vec4( 0.5, -0.5, 0.5 ), vec4( -0.5, -0.5, 0.5 ), vec4( 0.5, 0.5, 0.5 ) ); // back
+square.addTriangle( vec4( -0.5, 0.5, 0.5 ), vec4( 0.5, 0.5, 0.5 ), vec4( -0.5, -0.5, 0.5 ) ); // back complementary
+square.addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ), vec4( 0.5, -0.5, 0.5 ) ); // bottom
+square.addTriangle( vec4( -0.5, -0.5, 0.5 ), vec4( 0.5, -0.5, 0.5 ), vec4( -0.5, -0.5, -0.5 )  ); // bottom complementary
+square.addTriangle( vec4( 0.5, 0.5, -0.5 ), vec4( -0.5, 0.5, -0.5 ), vec4( 0.5, 0.5, 0.5 ) ); // top
+square.addTriangle( vec4( -0.5, 0.5, 0.5 ), vec4( 0.5, 0.5, 0.5 ), vec4( -0.5, 0.5, -0.5 ) ); // top complementary
+square.addTriangle( vec4( -0.5, -0.5, -0.5 ), vec4( -0.5, -0.5, 0.5 ), vec4( -0.5, 0.5, -0.5 ) ); // right side
+square.addTriangle( vec4( -0.5, 0.5, 0.5 ), vec4( -0.5, 0.5, -0.5 ), vec4( -0.5, -0.5, 0.5 ) ); // right side complementary
+square.addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( 0.5, -0.5, 0.5 ), vec4( 0.5, 0.5, -0.5 ) ); // left side
+square.addTriangle( vec4( 0.5, 0.5, 0.5 ), vec4( 0.5, 0.5, -0.5 ), vec4( 0.5, -0.5, 0.5 ) ); // left side complementary
+shapes.push( square);
+
 var time = 0;
 
 var lightPosition = vec4(-1.0, -1.0, -1.0, 0.0 );
@@ -86,6 +102,9 @@ function quad(a, b, c, d) {
      var normal = vec3(normal);
      normal = normalize(normal);
 
+    // shapes[ 1].addTriangle( vertices[a], vertices[b], vertices[c]);
+    // shapes[ 1].addTriangle( vertices[a], vertices[c], vertices[d]);
+
      pointsArray.push(vertices[a]); 
      normalsArray.push(normal); 
      texCoordsArray.push(texCoord[0]);
@@ -109,7 +128,7 @@ function quad(a, b, c, d) {
      pointsArray.push(vertices[d]); 
      normalsArray.push(normal);  
      texCoordsArray.push(texCoord[3]);
-}
+};
 
 
 function colorCube()
@@ -356,10 +375,12 @@ var render = function(){
     sphere1.render();
     cone1.render();
 
-    eye = cameraTransform[ "pos"];
-    let lookDirection = getLookDirection( 100, 2);
-    lookDirection = add( eye, lookDirection);
-    camModelViewMatrix = lookAt(eye, lookDirection, vec3( realCamOrientation[1]));
+    // eye = cameraTransform[ "pos"];
+    // let lookDirection = getLookDirection( 100, 2);
+    // lookDirection = add( eye, lookDirection);
+    moveCamera();
+
+    camModelViewMatrix = getCameraModelView();
     projectionMatrix = perspective(camFovy, camAspect, camNearPers, camFarPers);
     gl.uniformMatrix4fv( camModelViewLoc, false, flatten(camModelViewMatrix) );
     gl.uniformMatrix4fv( projectionMatrixLoc, false, flatten(projectionMatrix) );
@@ -371,5 +392,4 @@ var render = function(){
     // gl.drawArrays( gl.TRIANGLES, 0, 36 );
 
     requestAnimFrame(render);
-    moveCamera();
 }

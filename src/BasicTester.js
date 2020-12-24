@@ -12,9 +12,31 @@ function executeTests()
     console.log( efficientDistance( [ 2, 3, 4, 0], [4, -2, 1, 0]));
     console.log("DISTANCE CALCULATOR TEST END");
     console.log( "SPHERE TEST");
-    // var testSphere = new Sphere( vec4( 0, 0, 10, 0), 1);
-    // var rayOrigin = vec4( 0, 0, 0, 0);
-    // var rayDir = vec4( 0, 0, 1, 0);
-    // console.log( testSphere.interactWithRay( rayOrigin, rayDir));
+    var testSphere = new Sphere( vec4( 0, 0, 10, 0), 1);
+    var rayOrigin = vec4( 0, 0, 0, 0);
+    var rayDir = vec4( 0, 0, 1, 0);
+    console.log( testSphere.interactWithRay( rayOrigin, rayDir));
     console.log( "SPHERE TEST END");
+
+    console.log( "TRIANGLE TEST");
+    var triangle = new Triangle( new vec4(-20, 0, 0), new vec4(-20, 10, 10), new vec4(-20, 0, 10));
+
+    console.log( "TRIANGLE AB: " + triangle.edgeAB);
+    console.log( "TRIANGLE AC: " + triangle.edgeAC);
+    console.log( "TRIANGLE LENGTH/AREA: " + triangle.triCompleteArea);
+    console.log( "TRIANGLE NORMAL: " + triangle.normal);
+    rayOrigin = new vec4( 10, 0, 0);
+    rayDir = new vec4( -1, 0, 0);
+    var intersection = triangle.interactWithRay( rayOrigin, rayDir);
+    if ( intersection != null)
+    {
+        console.log( "U : " + triangle.u);
+        console.log( "V: " + triangle.v);
+        console.log( intersection);
+    }
+    else
+    {
+        console.log( "NO INTERSECTION");
+    }
+    console.log( "TRIANGLE TEST END");
 };

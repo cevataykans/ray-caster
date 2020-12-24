@@ -51,10 +51,25 @@ function efficientDistance( u, v)
     return distance;
 }
 
-function InteractionResult( point, distance, normal, color)
+function InteractionResult( point, distance)
 {
     this.hitPoint = point;
     this.hitDistance = distance;
+};
+
+function SurfaceData( normal, color, texture)
+{
     this.hitNormal = normal;
     this.hitColor = color;
+    this.hitTexture = texture;
+};
+
+function shortenVector( vector, length)
+{
+    var shortenedVector = [];
+    for ( let i = 0; i < length; i++)
+    {
+        shortenedVector[ i] = vector[ i];
+    }
+    return shortenedVector;
 };
