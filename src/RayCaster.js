@@ -131,6 +131,7 @@ function RayCaster()
         var maxDistance = Number.MAX_SAFE_INTEGER;
         var closestShape = null;
         var shapeIntersectionData = null;
+        var intersectionDataToReturn = null;
         for ( let curShapeIndex = 0; curShapeIndex < shapes.length; curShapeIndex++)
         {
             shapeIntersectionData = shapes[ curShapeIndex].interactWithRay( rayOrigin, rayDir);
@@ -141,11 +142,12 @@ function RayCaster()
                 {
                     closestShape = shapes[ curShapeIndex];
                     maxDistance = shapeIntersectionData.hitDistance;
+                    intersectionDataToReturn = shapeIntersectionData;
                 }
             }
         }
         // return shape with intersection details!
-        return shapeIntersectionData ? { shape: closestShape, hitpoint: shapeIntersectionData.hitPoint, } : null;
+        return intersectionDataToReturn ? { shape: closestShape, hitpoint: intersectionDataToReturn.hitPoint } : null;
     };
 
     this.shadePoint = function(rayOrigin, rayDir, shapeToShadeDetails) // return color emitted by surface in ray interaction

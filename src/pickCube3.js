@@ -42,8 +42,21 @@ var vertexColors = [
 const sphere1 = new Sphere(vec3(0,2.5,0), 1);
 const cone1 = new Cone(vec3(0,0,0), 1, 3);
 
-var shapes = [ new Sphere( vec4( 0, 0, 0, 0), 1)]; //new Square( vec4( 4, 0, 0, 0), []) ]; //TODO make it oop!
-
+var shapes = [ new Sphere( vec4( 2, 0, 0, 0), 1) ];//new Square( vec4( 0, 0, 0, 0)) ]; //TODO make it oop!
+var square = new Square( vec4( 0, 0, 0, 0));
+square.addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ), vec4( 0.5, 0.5, -0.5 ) ); // front
+square.addTriangle( vec4( -0.5, 0.5, -0.5 ), vec4( 0.5, 0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ) ); // front complementary
+square.addTriangle( vec4( 0.5, -0.5, 0.5 ), vec4( -0.5, -0.5, 0.5 ), vec4( 0.5, 0.5, 0.5 ) ); // back
+square.addTriangle( vec4( -0.5, 0.5, 0.5 ), vec4( 0.5, 0.5, 0.5 ), vec4( -0.5, -0.5, 0.5 ) ); // back complementary
+square.addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ), vec4( 0.5, -0.5, 0.5 ) ); // bottom
+square.addTriangle( vec4( -0.5, -0.5, 0.5 ), vec4( 0.5, -0.5, 0.5 ), vec4( -0.5, -0.5, -0.5 )  ); // bottom complementary
+square.addTriangle( vec4( 0.5, 0.5, -0.5 ), vec4( -0.5, 0.5, -0.5 ), vec4( 0.5, 0.5, 0.5 ) ); // top
+square.addTriangle( vec4( -0.5, 0.5, 0.5 ), vec4( 0.5, 0.5, 0.5 ), vec4( -0.5, 0.5, -0.5 ) ); // top complementary
+square.addTriangle( vec4( -0.5, -0.5, -0.5 ), vec4( -0.5, -0.5, 0.5 ), vec4( -0.5, 0.5, -0.5 ) ); // right side
+square.addTriangle( vec4( -0.5, 0.5, 0.5 ), vec4( -0.5, 0.5, -0.5 ), vec4( -0.5, -0.5, 0.5 ) ); // right side complementary
+square.addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( 0.5, -0.5, 0.5 ), vec4( 0.5, 0.5, -0.5 ) ); // left side
+square.addTriangle( vec4( 0.5, 0.5, 0.5 ), vec4( 0.5, 0.5, -0.5 ), vec4( 0.5, -0.5, 0.5 ) ); // left side complementary
+shapes.push( square);
 
 var time = 0;
 
@@ -89,8 +102,8 @@ function quad(a, b, c, d) {
      var normal = vec3(normal);
      normal = normalize(normal);
 
-    //  shapes[ 1].addTriangle( vertices[a], vertices[b], vertices[c]);
-    //  shapes[ 1].addTriangle( vertices[a], vertices[c], vertices[d]);
+    // shapes[ 1].addTriangle( vertices[a], vertices[b], vertices[c]);
+    // shapes[ 1].addTriangle( vertices[a], vertices[c], vertices[d]);
 
      pointsArray.push(vertices[a]); 
      normalsArray.push(normal); 

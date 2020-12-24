@@ -16,6 +16,7 @@ function Triangle( firstPoint, secPoint, thirdPoint)
     this.D = dot( this.normal, this.firstPoint); 
 
     // other details such as material, color etc.
+    this.color = vec4( 0, 1, 0, 1);
     this.u;
     this.v;
 
@@ -32,11 +33,11 @@ function Triangle( firstPoint, secPoint, thirdPoint)
     this.interactWithRay = function ( rayOrigin, rayDir)
     {
         // check triangle facing backward, do not render it!
-        if ( dot( rayDir, this.normal ) > 0)
-        {
-            //console.log( "TRIANGLE FACING BACKWARD");
-            return null;
-        }
+        // if ( dot( rayDir, this.normal ) > 0)
+        // {
+        //     //console.log( "TRIANGLE FACING BACKWARD");
+        //     return null;
+        // }
 
         // check triangle and ray is parallel        
         var parallelFlag = dot( this.normal, rayDir);

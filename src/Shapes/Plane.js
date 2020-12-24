@@ -5,7 +5,7 @@ function Plane( center, normal)
 
     // other details such as material, color etc.
     this.color = vec4( 0.0, 1.0, 1.0, 1.0);
-    this.interactWithRay = function ( rayOrigin, rayDir)
+    this.interactWithRay = function ( rayOrigin, rayDir) // DEPRECIATED!
     {
         // ray equation = rayOrigin + t * rayDir
         // Plane equation = ( p - p0 ) dot product N == 0 LET t be hitParam!

@@ -1,23 +1,29 @@
-function Square( center, triangles) 
+function Square( center) 
 {
     this.center = center;
     this.triangles = [];
     this.hitTriangle = null;
 
     // other details such as material, color etc.
-    this.color = vec4( 1.0, 0.5, 0.5, 1.0);
+    this.color = vec4( 1.0, 0.0, 0.0, 1.0);
 
     this.addTriangle = function( firstPoint, secPoint, thirdPoint)
     {
-        firstPoint[ 3] = 0;
-        secPoint[ 3] = 0;
-        thirdPoint[ 3] = 0;
+        var firstP = vec4();
+        var secP = vec4();
+        var thirdP = vec4();
+        for ( let i = 0; i < 3; i++) // MAKE DEEP COPY SO THAT PHYSICAL TRIANGLE IS NOT AFFECTED BY THE TRANSFORMATION //TODO: make physical apperance comply with virtual center!
+        {
+            firstP[ i] = firstPoint[ i];
+            secP[ i] = secPoint[ i];
+            thirdP[ i] = thirdPoint[ i];
+        }
 
-        firstPoint = add( this.center, firstPoint);
-        secPoint = add( this.center, secPoint);
-        thirdPoint = add( this.center, thirdPoint);
+        firstP = add( this.center, firstP);
+        secP = add( this.center, secP);
+        thirdP = add( this.center, thirdP);
 
-        var triangleToAdd = new Triangle( firstPoint, secPoint, thirdPoint);
+        var triangleToAdd = new Triangle( firstP, secP, thirdP);
         triangleToAdd.setSurfaceData( this.color); //TODO
         this.triangles.push( triangleToAdd);
     };
@@ -32,6 +38,7 @@ function Square( center, triangles)
         this.hitTriangle = null;
         var maxDistance = Number.MAX_VALUE;
         var interactionResult = null;
+        var hitTriangleInteractionDetails = null;
         for ( let i = 0; i < this.triangles.length; i++)
         {
             interactionResult = this.triangles[ i].interactWithRay( rayOrigin, rayDir);
@@ -41,9 +48,10 @@ function Square( center, triangles)
                 {
                     this.hitTriangle = this.triangles[ i];
                     maxDistance = interactionResult.hitDistance;
+                    hitTriangleInteractionDetails = interactionResult;
                 }
             }
         }
-        return interactionResult ? interactionResult : null;
+        return hitTriangleInteractionDetails ? hitTriangleInteractionDetails : null;
     };
 };
