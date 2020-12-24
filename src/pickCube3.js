@@ -39,6 +39,9 @@ var vertexColors = [
         vec4( 1.0, 1.0, 1.0, 1.0 ),   // white
     ];
 
+const sphere1 = new Sphere(vec3(0,2.5,0), 1);
+const cone1 = new Cone(vec3(0,0,0), 1, 3);
+
 var time = 0;
 
 var lightPosition = vec4(-1.0, -1.0, -1.0, 0.0 );
@@ -146,7 +149,7 @@ window.onload = function init() {
     gl.clearColor( 0.5, 0.5, 0.5, 1.0 );
     
     gl.enable(gl.CULL_FACE);
-    
+
     var texture = gl.createTexture();
     gl.bindTexture( gl.TEXTURE_2D, texture );
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -204,33 +207,43 @@ window.onload = function init() {
     gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vPosition);
 
+    var tBuffer = gl.createBuffer();
+    gl.bindBuffer( gl.ARRAY_BUFFER, tBuffer);
+    gl.bufferData( gl.ARRAY_BUFFER, flatten(texCoordsArray), gl.STATIC_DRAW );
+    var vTexCoord = gl.getAttribLocation( program, "vTexCoord");
+    gl.vertexAttribPointer(vTexCoord, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(vTexCoord);
+
     var imageSrc = document.getElementById("texImageMenu");
-    imageSrc.addEventListener("change", function() {
-        var image = document.createElement("img");
-        console.log(imageSrc.value);
-        if (imageSrc.value == "No Image")
+    imageSrc.addEventListener('change', function() {
+        let selection = imageSrc.value;
+        var img = document.createElement('img'); 
+        //img.visibility = "hidden";
+        if (selection == "No Image")
         {
             configureTextureNoImage(image2);
         }
-        else {
-            switch(imageSrc.value)
+        else
+        {
+            switch(selection)
             {
                 case "Default":
-                    image.src = "Default.png";
+                    img.src = "Default.png";
                     break;
                 case "1080x1080":
-                    image.src = "1080x1080.jpg";
+                    img.src = "1080x1080.jpg";
                     break;
                 case "Logo":
-                    image.src = "Logo.gif";
+                    img.src = "Logo.gif";
                     break;
                 case "Rainbow":
-                    image.src = "Rainbow.jpg";
+                    img.src = "Rainbow.jpg";
                     break;
             }
-            configureTextureImage(image);
+            configureTextureImage(img);
         }
     });
+    configureTextureNoImage(image2);
 
     thetaLoc = gl.getUniformLocation(program, "theta");
     
@@ -326,19 +339,22 @@ window.onload = function init() {
 
 
 var render = function(){
-    gl.clear( gl.COLOR_BUFFER_BIT );
-    if(flag) theta[axis] += 2.0;
+    gl.clear(gl.COLOR_BUFFER_BIT);  
+    //if(flag) theta[axis] += 2.0;
     modelView = mat4();
-    modelView = mult(modelView, rotate(theta[xAxis], [1, 0, 0] ));
-    modelView = mult(modelView, rotate(theta[yAxis], [0, 1, 0] ));
-    modelView = mult(modelView, rotate(theta[zAxis], [0, 0, 1] ));
+    // modelView = mult(modelView, rotate(theta[xAxis], [1, 0, 0] ));
+    // modelView = mult(modelView, rotate(theta[yAxis], [0, 1, 0] ));
+    // modelView = mult(modelView, rotate(theta[zAxis], [0, 0, 1] ));
 
-    lightPosition[0] = Math.sin(0.01*time);
-    lightPosition[1] = Math.sin(0.01*time);
-    lightPosition[2] = Math.cos(0.01*time);
+    // lightPosition[0] = Math.sin(0.01*time);
+    // lightPosition[1] = Math.sin(0.01*time);
+    // lightPosition[2] = Math.cos(0.01*time);
     //console.log(lightPosition[0]);
     
-    time += 1;
+    //time += 1;
+
+    sphere1.render();
+    cone1.render();
 
     eye = cameraTransform[ "pos"];
     let lookDirection = getLookDirection( 100, 2);
@@ -352,7 +368,7 @@ var render = function(){
             "modelViewMatrix"), false, flatten(modelView) );
 
     gl.uniform1i(gl.getUniformLocation(program, "i"),0);
-    gl.drawArrays( gl.TRIANGLES, 0, 36 );
+    // gl.drawArrays( gl.TRIANGLES, 0, 36 );
 
     requestAnimFrame(render);
     moveCamera();
