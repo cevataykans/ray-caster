@@ -14,14 +14,8 @@ function RayCaster()
 {
     this.pixelList = [];
 
-    this.setupRaycaster = function()
-    {
-        camTf = cameraTransform;
-    };
-
     this.castRays = function()
     {
-        this.setupRaycaster();
         this.pixelList = [];
         hitCount = 0;
         for( let i = 0; i < imageHeight; i++)
@@ -31,9 +25,9 @@ function RayCaster()
                 var rayP = this.buildRay( j, i);
                 var rayOrigin = vec4( 0, 0, 0, 0);
 
-                var rotateAroundX = rotate( camTf["rot"][0], [1, 0, 0]);
-                var rotateAroundY = rotate( camTf["rot"][1], [0, 1, 0]);
-                var rotateAroundZ = rotate( camTf["rot"][2], [0, 0, 1]);
+                // var rotateAroundX = rotate( camTf["rot"][0], [1, 0, 0]);
+                // var rotateAroundY = rotate( camTf["rot"][1], [0, 1, 0]);
+                // var rotateAroundZ = rotate( camTf["rot"][2], [0, 0, 1]);
                 // console.log( "ROTATE X");
                 // console.log( rotateAroundX);
                 // console.log( "ROTATE Y");
@@ -42,16 +36,16 @@ function RayCaster()
                 // console.log( rotateAroundZ);
 
                 var rayPWorld = rayP;
-                rayPWorld = multMV( rotateAroundX, rayPWorld);
-                rayPWorld = multMV( rotateAroundY, rayPWorld);
-                rayPWorld = multMV( rotateAroundZ, rayPWorld);
-                rayPWorld = add( [...camTf["pos"], 0 ], rayPWorld);
+                // rayPWorld = multMV( rotateAroundX, rayPWorld);
+                // rayPWorld = multMV( rotateAroundY, rayPWorld);
+                // rayPWorld = multMV( rotateAroundZ, rayPWorld);
+                rayPWorld = add( [...camPos, 0 ], rayPWorld);
 
                 var rayOriginWorld = rayOrigin;
-                rayOriginWorld = multMV( rotateAroundX, rayOriginWorld);
-                rayOriginWorld = multMV( rotateAroundY, rayOriginWorld);
-                rayOriginWorld = multMV( rotateAroundZ, rayOriginWorld);
-                rayOriginWorld = add( [...camTf["pos"], 0 ], rayOriginWorld);
+                // rayOriginWorld = multMV( rotateAroundX, rayOriginWorld);
+                // rayOriginWorld = multMV( rotateAroundY, rayOriginWorld);
+                // rayOriginWorld = multMV( rotateAroundZ, rayOriginWorld);
+                rayOriginWorld = add( [...camPos, 0 ], rayOriginWorld);
                 
                 // console.log( "CAM TF POS");
                 // console.log( camTf["pos"]);
@@ -75,7 +69,7 @@ function RayCaster()
                 if ( i ==  Math.floor( (imageWidth / 2) ) && j == Math.floor( (imageHeight / 2) ) )
                 {
                     console.log( "CAM TF POS");
-                    console.log( camTf["pos"]);
+                    console.log( camPos);
 
                     console.log( "Ray P World:");
                     console.log( rayPWorld);
@@ -100,15 +94,15 @@ function RayCaster()
     {   
         //TODO build ray and return at pixel to world coordinate
         var aspectRatio = imageWidth / imageHeight;
-        var fovAngleEffect = Math.tan( (camFovy / 2) * Math.PI / 180);
+        var fovAngleEffect = Math.tan( (camFovy / 2) * (Math.PI / 180));
 
         var pixelNDCx = (pixelX + 0.5) / imageWidth;
         var pixelNDCy = (pixelY + 0.5) / imageHeight;
 
         var pixelScreenX = ((2 * pixelNDCx) - 1 ) * aspectRatio * fovAngleEffect;
-        var pixelScreenY = 1- (2 * pixelNDCy) * fovAngleEffect;
+        var pixelScreenY = (1 - (2 * pixelNDCy)) * fovAngleEffect;
 
-        return new vec4( pixelScreenX, pixelScreenY, 1, 0);
+        return new vec4( -pixelScreenX, pixelScreenY, 1, 0);
     };    
 
 

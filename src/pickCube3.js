@@ -356,10 +356,12 @@ var render = function(){
     sphere1.render();
     cone1.render();
 
-    eye = cameraTransform[ "pos"];
-    let lookDirection = getLookDirection( 100, 2);
-    lookDirection = add( eye, lookDirection);
-    camModelViewMatrix = lookAt(eye, lookDirection, vec3( realCamOrientation[1]));
+    // eye = cameraTransform[ "pos"];
+    // let lookDirection = getLookDirection( 100, 2);
+    // lookDirection = add( eye, lookDirection);
+    moveCamera();
+
+    camModelViewMatrix = getCameraModelView();
     projectionMatrix = perspective(camFovy, camAspect, camNearPers, camFarPers);
     gl.uniformMatrix4fv( camModelViewLoc, false, flatten(camModelViewMatrix) );
     gl.uniformMatrix4fv( projectionMatrixLoc, false, flatten(projectionMatrix) );
@@ -371,5 +373,4 @@ var render = function(){
     // gl.drawArrays( gl.TRIANGLES, 0, 36 );
 
     requestAnimFrame(render);
-    moveCamera();
 }
