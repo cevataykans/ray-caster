@@ -116,7 +116,7 @@ function RayCaster()
         if ( closestObject)
         {
             hitCount++;
-            return this.shadePoint( rayOrigin, rayDir, closestObject.shape.getShapeSurfaceData( closestObject.hitpoint ) );
+            return this.shadePoint( rayOrigin, rayDir, closestObject.shape.getShapeSurfaceData( closestObject.hitpoint, rayDir) );
         }
         else
         {

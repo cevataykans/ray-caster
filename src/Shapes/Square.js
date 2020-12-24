@@ -28,7 +28,7 @@ function Square( center)
         this.triangles.push( triangleToAdd);
     };
 
-    this.getShapeSurfaceData = function( hitpoint)
+    this.getShapeSurfaceData = function( hitpoint, rayDir)
     {
         return this.hitTriangle.getShapeSurfaceData( hitpoint);
     };

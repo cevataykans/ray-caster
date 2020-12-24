@@ -28,7 +28,7 @@ function Triangle( firstPoint, secPoint, thirdPoint)
         this.color = colorToSet;
     };
 
-    this.getShapeSurfaceData = function( hitpoint) //TODO
+    this.getShapeSurfaceData = function( hitpoint, rayDir) //TODO
     {
         this.ranColor1 = multScalar( this.ranColor1, this.u );
         this.ranColor1 = multScalar( this.ranColor2, this.v );
