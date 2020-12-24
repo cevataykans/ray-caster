@@ -11,13 +11,20 @@ class Sphere {
         // other details such as material, color etc.
         this.color = vec4( 1.0, 0.5, 0.5, 1.0);
 
-        this.getShapeSurfaceData = function( hitpoint)
+        this.getShapeSurfaceData = function( hitpoint, rayDir)
         {
             var normal = normalize( subtract( hitpoint, this.center) );
+            var colorToReturn = [];
+            for ( let i = 0; i < 3; i++)
+            {
+                colorToReturn.push( this.color[ i] * Math.max( 0, dot( normal, multScalar( rayDir, -1) )) );
+            }
+            colorToReturn.push( 1);
+           
             var texture = vec2();
             texture[ 0] =  (1 + (Math.atan2( hitpoint[ 2], hitpoint[0] ) / Math.PI) ) * 0.5;
             texture[ 1] = Math.acos( hitpoint[ 1]) / Math.PI;
-            return new SurfaceData( normal, this.color, texture);
+            return new SurfaceData( normal, colorToReturn, texture);
         };
 
         this.calculatePoints = function () {
