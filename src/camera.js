@@ -26,12 +26,6 @@ var keyDowns = {
     "alt": false
 };
 
-var cameraTransform = {
-    "pos": [ 0.0, 0.0, -5],
-    "rot": [ 0.0, 0.0, 0.0], 
-    "scale": [ 1, 1, 1],
-};
-
 var camForward = [ 0, 0, 1];
 var camUp = [ 0, 1, 0];
 var camRight = [ -1, 0, 0];
@@ -65,7 +59,6 @@ function moveUp(dist)
     camPos[0] += camUp[0] * dist;
     camPos[1] += camUp[1] * dist;
     camPos[2] += camUp[2] * dist;
-    console.log( camPos);
 };
 
 function moveRight(dist)
@@ -166,13 +159,3 @@ function updateCameraAngle(e)
     // realCamOrientation = mult( rotate(cameraTransform[ "rot"][ 1], 0, 1, 0), realCamOrientation);
     // realCamOrientation = mult( rotate(cameraTransform[ "rot"][ 2], 0, 0, 1), realCamOrientation);
 };
-
-// function getLookDirection( distance, axis)
-// {
-//     let normalizedDirection = normalize( vec3( realCamOrientation[ axis]));
-//     for ( let i = 0; i < normalizedDirection.length; i++)
-//     {
-//         normalizedDirection[ i] *= distance;
-//     }
-//     return normalizedDirection;
-// };

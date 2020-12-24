@@ -42,6 +42,9 @@ var vertexColors = [
 const sphere1 = new Sphere(vec3(0,2.5,0), 1);
 const cone1 = new Cone(vec3(0,0,0), 1, 3);
 
+var shapes = [ new Sphere( vec4( 0, 0, 0, 0), 1)]; //new Square( vec4( 4, 0, 0, 0), []) ]; //TODO make it oop!
+
+
 var time = 0;
 
 var lightPosition = vec4(-1.0, -1.0, -1.0, 0.0 );
@@ -86,6 +89,9 @@ function quad(a, b, c, d) {
      var normal = vec3(normal);
      normal = normalize(normal);
 
+    //  shapes[ 1].addTriangle( vertices[a], vertices[b], vertices[c]);
+    //  shapes[ 1].addTriangle( vertices[a], vertices[c], vertices[d]);
+
      pointsArray.push(vertices[a]); 
      normalsArray.push(normal); 
      texCoordsArray.push(texCoord[0]);
@@ -109,7 +115,7 @@ function quad(a, b, c, d) {
      pointsArray.push(vertices[d]); 
      normalsArray.push(normal);  
      texCoordsArray.push(texCoord[3]);
-}
+};
 
 
 function colorCube()
