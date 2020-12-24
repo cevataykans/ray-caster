@@ -85,22 +85,27 @@ function quad(a, b, c, d) {
 
      pointsArray.push(vertices[a]); 
      normalsArray.push(normal); 
-     colorsArray.push(vertexColors[a]);
+     texCoordsArray.push(texCoord[0]);
+
      pointsArray.push(vertices[b]); 
      normalsArray.push(normal); 
-     colorsArray.push(vertexColors[a]);
+     texCoordsArray.push(texCoord[1]);
+
      pointsArray.push(vertices[c]); 
      normalsArray.push(normal);  
-     colorsArray.push(vertexColors[a]); 
+     texCoordsArray.push(texCoord[2]);
+
      pointsArray.push(vertices[a]);  
      normalsArray.push(normal); 
-     colorsArray.push(vertexColors[a]);
+     texCoordsArray.push(texCoord[0]);
+
      pointsArray.push(vertices[c]); 
      normalsArray.push(normal); 
-     colorsArray.push(vertexColors[a]);
+     texCoordsArray.push(texCoord[2]);
+
      pointsArray.push(vertices[d]); 
      normalsArray.push(normal);  
-     colorsArray.push(vertexColors[a]);  
+     texCoordsArray.push(texCoord[3]);
 }
 
 
@@ -198,6 +203,34 @@ window.onload = function init() {
     var vPosition = gl.getAttribLocation(program, "vPosition");
     gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vPosition);
+
+    var imageSrc = document.getElementById("texImageMenu");
+    imageSrc.addEventListener("change", function() {
+        var image = document.createElement("img");
+        console.log(imageSrc.value);
+        if (imageSrc.value == "No Image")
+        {
+            configureTextureNoImage(image2);
+        }
+        else {
+            switch(imageSrc.value)
+            {
+                case "Default":
+                    image.src = "Default.png";
+                    break;
+                case "1080x1080":
+                    image.src = "1080x1080.jpg";
+                    break;
+                case "Logo":
+                    image.src = "Logo.gif";
+                    break;
+                case "Rainbow":
+                    image.src = "Rainbow.jpg";
+                    break;
+            }
+            configureTextureImage(image);
+        }
+    });
 
     thetaLoc = gl.getUniformLocation(program, "theta");
     
