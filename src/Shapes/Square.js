@@ -1,16 +1,8 @@
-<<<<<<< HEAD
-function Cube( center = vec3(0, 0, 0), side = 1) 
+function Cube( center = vec4(0, 0, 0, 0), side = 1) 
 {
     this.center = center;
     this.side = side;
-    this.color = new vec4(1, 1, 1, 1);
     this.vertices = []
-=======
-function Square( center, sideLength) 
-{
-    this.center = center;
-    this.sideLength = sideLength;
->>>>>>> 73507db646667a388fa97fe86208a15144572ccc
     this.triangles = [];
     this.hitTriangle = null;
     this.points = [];
@@ -24,7 +16,9 @@ function Square( center, sideLength)
         vec2(1, 0)
     ];
 
-    this.material = new Material();
+    // other details such as material, color etc.
+    this.color = vec4( 1.0, 0.0, 0.0, 1.0);
+    this.material = new Material( MaterialTypes.diffuse, this.color);
 
     this.calculateVertices = function() {
         this.vertices.push(vec4((this.center[0] - this.side/2), (this.center[1] - this.side/2), this.center[2] + this.side/2, 1.0));
@@ -139,9 +133,9 @@ function Square( center, sideLength)
         var thirdP = vec4(0, 0, 0, 0);
         for ( let i = 0; i < 3; i++) // MAKE DEEP COPY SO THAT PHYSICAL TRIANGLE IS NOT AFFECTED BY THE TRANSFORMATION //TODO: make physical apperance comply with virtual center!
         {
-            firstP[ i] = firstPoint[ i] * this.sideLength;
-            secP[ i] = secPoint[ i] * this.sideLength;
-            thirdP[ i] = thirdPoint[ i] * this.sideLength;
+            firstP[ i] = firstPoint[ i] * this.side;
+            secP[ i] = secPoint[ i] * this.side;
+            thirdP[ i] = thirdPoint[ i] * this.side;
         }
 
         firstP = add( this.center, firstP);

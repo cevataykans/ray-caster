@@ -74,7 +74,22 @@ function shortenVector( vector, length)
     return shortenedVector;
 };
 
-function Material( albedo = vec4( 0.18, 0.18, 0.18, 1))
+function reflectVector( incoming, surfaceNormal)
 {
+    var outgoing = vec4( 0, 0, 0, 0);
+    outgoing = subtract( incoming, multScalar( surfaceNormal, 2 * dot( incoming, surfaceNormal) ) );
+    return outgoing;
+}
+
+var MaterialTypes = {
+    diffuse: 0,
+    reflection: 1,
+    refract: 2,
+}
+
+function Material( type, color, albedo = vec4( 0.18, 0.18, 0.18, 1))
+{
+    this.type = type;
     this.albedo = albedo;
+    this.color = color;
 };

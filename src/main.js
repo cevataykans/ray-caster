@@ -24,11 +24,7 @@ const cube1 = new Cube(vec3(-3,1,2), 3);
 var allShapes = [];
 
 var shapes = [ new Sphere( vec4( -1.5, 0, 0, 0), 0.5), new Sphere( vec4( 2, 0, 0, 0), 1) ]; //TALHA IF YOU WANT YOUR SHAPES TO BE RENDERED YOU NEED TO PUT THEM INTO THIS LIST
-<<<<<<< HEAD
-var square = new Cube( vec4( 0, 0, 0, 0));
-=======
-var square = new Square( vec4( 0, -6, 0, 0), 10);
->>>>>>> 73507db646667a388fa97fe86208a15144572ccc
+var square = new Cube( vec4( 0, -6, 0, 0), 10);
 square.addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ), vec4( 0.5, 0.5, -0.5 ) ); // front
 square.addTriangle( vec4( -0.5, 0.5, -0.5 ), vec4( 0.5, 0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ) ); // front complementary
 square.addTriangle( vec4( 0.5, -0.5, 0.5 ), vec4( -0.5, -0.5, 0.5 ), vec4( 0.5, 0.5, 0.5 ) ); // back

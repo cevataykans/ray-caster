@@ -1,6 +1,6 @@
 var imageWidth = 512;
 var imageHeight = 512;
-var traceDepth = 1;
+var traceDepth = 3;
 
 var hitCount = 0;
 var camTf;
@@ -120,7 +120,7 @@ function RayCaster()
         if ( closestObject)
         {
             hitCount++;
-            return this.shadePoint( rayOrigin, rayDir, traceDepth - 1, closestObject);
+            return this.shadePoint( rayOrigin, rayDir, traceDepth, closestObject);
         }
         else
         {
@@ -172,64 +172,66 @@ function RayCaster()
         var hitShape = hitObject.shape;
         var surfaceDetails = hitShape.getShapeSurfaceData( hitPoint, rayDir);
         var shapeAlbedo = surfaceDetails.material.albedo;
+        var shapeMaterialType = surfaceDetails.material.type;
         var hitNormal = surfaceDetails.hitNormal;
-
-        // // Light sahder specific data
-        // var lightShaderData = sceneLight.getLightShadingData( hitPoint);
-        // var reverseLightDir = multScalar( lightShaderData.lightDirection, -1);
-        // var lightAmount = lightShaderData.lightAmount;
-        // var lightTravelLimit = lightShaderData.travelLimit;
-
-        //TODO if check reflection and rafraction of the shapeToShadeDetails.materialType
-
-        //TODO check reflection of the shapeToShadeDetails.materialType
-
-        //TODO  else shade it with pong model by checking first shadow
-        
-        // Diffuse shading 
-        var curLightColor = vec4( 0, 0, 0, 0);
-        var colorToReturn = vec4( 0, 0, 0, 0);
-        for ( let lightSrcInd = 0; lightSrcInd < lightSources.length; lightSrcInd++) // send ray for each light source!
+        var hitOrigin = add( hitPoint, multScalar( hitNormal, normalShadowBias) );
+        var hitColor = surfaceDetails.material.color;
+        if ( hitOrigin[ 3] > 0 && first)
         {
-            // Light sahder specific data
-            var lightShaderData = lightSources[lightSrcInd].getLightShadingData( hitPoint);
-            var reverseLightDir = multScalar( lightShaderData.lightDirection, -1);
-            var lightAmount = lightShaderData.lightAmount;
-            var lightTravelLimit = lightShaderData.travelLimit;
-
-            curLightColor = multScalar( mult( multScalar( shapeAlbedo, 1.0 / Math.PI), lightAmount), Math.max( 0, dot( hitNormal, reverseLightDir ) ) );
-
-            // send shadow secondary ray!
-            var hitOrigin = add( hitPoint, multScalar( hitNormal, normalShadowBias) );
-            if ( hitOrigin[ 3] > 0 && first)
-            {
-                throw "JUST BEFORE SHADOWING";
-            }
-            var closestObject = lightTravelLimit ? this.findClosestIntersectWithShape( hitOrigin, reverseLightDir, lightTravelLimit) : this.findClosestIntersectWithShape( hitOrigin, reverseLightDir);
-            if ( closestObject)
-            {
-                // shade as shadow
-                curLightColor[ 0] = 0;
-                curLightColor[ 1] = 0;
-                curLightColor[ 2] = 0;
-            }
-            colorToReturn = add( colorToReturn, curLightColor);
+            throw "JUST BEFORE SHADOWING";
         }
 
-        // // send shadow secondary ray!
-        // var hitOrigin = add( hitPoint, multScalar( hitNormal, normalShadowBias) );
-        // if ( hitOrigin[ 3] > 0 && first)
-        // {
-        //     throw "JUST BEFORE SHADOWING";
-        // }
-        // var closestObject = lightTravelLimit ? this.findClosestIntersectWithShape( hitOrigin, reverseLightDir, lightTravelLimit) : this.findClosestIntersectWithShape( hitOrigin, reverseLightDir);
-        // if ( closestObject)
-        // {
-        //     // shade as shadow
-        //     colorToReturn[ 0] = 0;
-        //     colorToReturn[ 1] = 0;
-        //     colorToReturn[ 2] = 0;
-        // }
+        var curLightColor = vec4( 0, 0, 0, 0);
+        var colorToReturn = vec4( 0, 0, 0, 0);
+
+        if ( shapeMaterialType === MaterialTypes.reflection ) //TODO check reflection of the shapeToShadeDetails.materialType
+        {
+            var reflectionVector = reflectVector( rayDir, hitNormal);
+            if ( length( reflectionVector) > 1)
+            {
+                normalize( reflectionVector);
+            }
+            colorToreturn = add( colorToReturn, this.traceRay( hitOrigin, reflectionVector, depth - 1 ) );
+        }
+        else if ( shapeMaterialType === MaterialTypes.refract ) //TODO if check reflection and rafraction of the shapeToShadeDetails.materialType
+        {
+
+        }
+        else if ( shapeMaterialType === MaterialTypes.diffuse ) //TODO  else shade it with pong model by checking first shadow
+        {
+            // Diffuse shading 
+            for ( let lightSrcInd = 0; lightSrcInd < lightSources.length; lightSrcInd++) // send ray for each light source!
+            {
+                // Light sahder specific data
+                var lightShaderData = lightSources[lightSrcInd].getLightShadingData( hitPoint);
+                var reverseLightDir = multScalar( lightShaderData.lightDirection, -1);
+                var lightIntensity = lightShaderData.lightIntensity;
+                var lightTravelLimit = lightShaderData.travelLimit;
+                var lightAmount;
+                if ( lightShaderData.lightType === LightTypes.POINT)
+                {
+                    lightAmount = multScalar(  multScalar( hitColor, lightIntensity), 1.0 / ( 4 * Math.PI * lightTravelLimit) );
+                }
+                else if ( lightShaderData.lightType === LightTypes.DISTANT)
+                {
+                    lightAmount = multScalar( hitColor, lightIntensity);
+                }
+    
+                curLightColor = multScalar( mult( multScalar( shapeAlbedo, 1.0 / Math.PI), lightAmount), Math.max( 0, dot( hitNormal, reverseLightDir ) ) );
+    
+                // send shadow secondary ray!
+                var closestObject = lightTravelLimit ? this.findClosestIntersectWithShape( hitOrigin, reverseLightDir, lightTravelLimit) : this.findClosestIntersectWithShape( hitOrigin, reverseLightDir);
+                if ( closestObject)
+                {
+                    // shade as shadow
+                    curLightColor[ 0] = 0;
+                    curLightColor[ 1] = 0;
+                    curLightColor[ 2] = 0;
+                }
+                colorToReturn = add( colorToReturn, curLightColor);
+            }
+        }
+
         colorToReturn[ 3] = 1;
         return colorToReturn;
     };
