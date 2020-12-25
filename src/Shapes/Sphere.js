@@ -4,15 +4,16 @@ class Sphere
     {
         this.center = center;
         this.radius = radius;
+        this.color = vec4( 1.0, 0.0, 1, 1.0);
         this.points = [];
         this.colors = [];
         this.normals = [];
-        this.stackCount = 20;
-        this.sectorCount = 20;
+        this.texPoints = [];
+        this.stackCount = 50;
+        this.sectorCount = 50;
         this.type = false;
 
         // other details such as material, color etc.
-        this.color = vec4( 1.0, 0.5, 0.5, 1.0);
         this.material = new Material(); //TODO: check if naming is correct
 
         this.calculatePoints = function () //TODO: seperate point generation and ray cast logic in two seperate classes contained in sphere?
@@ -67,6 +68,10 @@ class Sphere
                         this.colors.push(this.color);
                         this.colors.push(this.color);
                         this.colors.push(this.color);
+
+                        this.texPoints.push(i/this.stackCount, j/this.sectorCount);
+                        this.texPoints.push(i/this.stackCount, j/this.sectorCount);
+                        this.texPoints.push(i/this.stackCount, j/this.sectorCount);
                     }
 
                     if (i != (this.stackCount - 1)) {
@@ -88,10 +93,37 @@ class Sphere
                         this.colors.push(this.color);
                         this.colors.push(this.color);
                         this.colors.push(this.color);
+                            
+                        this.texPoints.push(i/this.stackCount, j/this.sectorCount);
+                        this.texPoints.push(i/this.stackCount, j/this.sectorCount);
+                        this.texPoints.push(i/this.stackCount, j/this.sectorCount);
                     }
                 }
             }
         };
+
+        this.mapTexture = function (image = null)
+        {
+            let texture;
+            if (image == null)
+                texture = configureTextureNoImage(image2);
+            else
+                texture = configureTextureImage(image);
+                
+            framebuffer = gl.createFramebuffer();
+            gl.bindFramebuffer( gl.FRAMEBUFFER, framebuffer);
+
+            gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+    
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+            var tBuffer = gl.createBuffer();
+            gl.bindBuffer( gl.ARRAY_BUFFER, tBuffer);
+            gl.bufferData( gl.ARRAY_BUFFER, flatten(this.texPoints), gl.STATIC_DRAW );
+            var vTexCoord = gl.getAttribLocation( program, "vTexCoord");
+            gl.vertexAttribPointer(vTexCoord, 2, gl.FLOAT, false, 0, 0);
+            gl.enableVertexAttribArray(vTexCoord);
+        }
 
         this.render = function () 
         {

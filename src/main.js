@@ -12,38 +12,19 @@ var normalsArray = [];
 var colorsArray = [];
 
 var framebuffer;
+var img;
 
 var flag = true;
 
 var color = new Uint8Array(4);
 
-var vertices = [
-        vec4( -0.5, -0.5,  0.5, 1.0 ),
-        vec4( -0.5,  0.5,  0.5, 1.0 ),
-        vec4( 0.5,  0.5,  0.5, 1.0 ),
-        vec4( 0.5, -0.5,  0.5, 1.0 ),
-        vec4( -0.5, -0.5, -0.5, 1.0 ),
-        vec4( -0.5,  0.5, -0.5, 1.0 ),
-        vec4( 0.5,  0.5, -0.5, 1.0 ),
-        vec4( 0.5, -0.5, -0.5, 1.0 ),
-    ];
-    
-var vertexColors = [
-        vec4( 0.0, 0.0, 0.0, 1.0 ),  // black
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red
-        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow
-        vec4( 0.0, 1.0, 0.0, 1.0 ),  // green
-        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue
-        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta
-        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan
-        vec4( 1.0, 1.0, 1.0, 1.0 ),   // white
-    ];
-
-const sphere1 = new Sphere(vec3(0,2.5,0), 1);
+const sphere1 = new Sphere(vec3(0,3,0), 1);
 const cone1 = new Cone(vec3(0,0,0), 1, 3);
+const cube1 = new Cube(vec3(-3,1,2), 3);
+var allShapes = [];
 
 var shapes = [ new Sphere( vec4( -1.5, 0, 0, 0), 0.5), new Sphere( vec4( 2, 0, 0, 0), 1) ]; //TALHA IF YOU WANT YOUR SHAPES TO BE RENDERED YOU NEED TO PUT THEM INTO THIS LIST
-var square = new Square( vec4( 0, 0, 0, 0));
+var square = new Cube( vec4( 0, 0, 0, 0));
 square.addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ), vec4( 0.5, 0.5, -0.5 ) ); // front
 square.addTriangle( vec4( -0.5, 0.5, -0.5 ), vec4( 0.5, 0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ) ); // front complementary
 square.addTriangle( vec4( 0.5, -0.5, 0.5 ), vec4( -0.5, -0.5, 0.5 ), vec4( 0.5, 0.5, 0.5 ) ); // back
@@ -99,54 +80,6 @@ var camModelViewMatrix;
 var projectionMatrixLoc;
 var projectionMatrix;
 
-function quad(a, b, c, d) {
-
-     var t1 = subtract(vertices[b], vertices[a]);
-     var t2 = subtract(vertices[c], vertices[b]);
-     var normal = cross(t1, t2);
-     var normal = vec3(normal);
-     normal = normalize(normal);
-
-    // shapes[ 1].addTriangle( vertices[a], vertices[b], vertices[c]);
-    // shapes[ 1].addTriangle( vertices[a], vertices[c], vertices[d]);
-
-     pointsArray.push(vertices[a]); 
-     normalsArray.push(normal); 
-     texCoordsArray.push(texCoord[0]);
-
-     pointsArray.push(vertices[b]); 
-     normalsArray.push(normal); 
-     texCoordsArray.push(texCoord[1]);
-
-     pointsArray.push(vertices[c]); 
-     normalsArray.push(normal);  
-     texCoordsArray.push(texCoord[2]);
-
-     pointsArray.push(vertices[a]);  
-     normalsArray.push(normal); 
-     texCoordsArray.push(texCoord[0]);
-
-     pointsArray.push(vertices[c]); 
-     normalsArray.push(normal); 
-     texCoordsArray.push(texCoord[2]);
-
-     pointsArray.push(vertices[d]); 
-     normalsArray.push(normal);  
-     texCoordsArray.push(texCoord[3]);
-};
-
-
-function colorCube()
-{
-    quad( 1, 0, 3, 2 );
-    quad( 2, 3, 7, 6 );
-    quad( 3, 0, 4, 7 );
-    quad( 6, 5, 1, 2 );
-    quad( 4, 5, 6, 7 );
-    quad( 5, 4, 0, 1 );
-}
-
-
 window.onload = function init() {
     canvas = document.getElementById( "gl-canvas" );
 
@@ -165,6 +98,7 @@ window.onload = function init() {
     
     gl = WebGLUtils.setupWebGL( canvas );
     if ( !gl ) { alert( "WebGL isn't available" ); }
+    //gl.enable(gl.DEPTH_TEST)
     
     elt = document.getElementById("test");
 
@@ -174,37 +108,11 @@ window.onload = function init() {
     
     gl.enable(gl.CULL_FACE);
 
-    var texture = gl.createTexture();
-    gl.bindTexture( gl.TEXTURE_2D, texture );
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 512, 512, 0, 
-       gl.RGBA, gl.UNSIGNED_BYTE, null);
-    gl.generateMipmap(gl.TEXTURE_2D);
-
-// Allocate a frame buffer object
-
-   framebuffer = gl.createFramebuffer();
-   gl.bindFramebuffer( gl.FRAMEBUFFER, framebuffer);
-
-
-// Attach color buffer
-
-   gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
-
-// check for completeness
-
-   //var status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-   //if(status != gl.FRAMEBUFFER_COMPLETE) alert('Frame Buffer Not Complete');
-
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-
     //
     //  Load shaders and initialize attribute buffers
     //
     program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
-    
-    colorCube();
     
     var cBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, cBuffer );
@@ -231,43 +139,32 @@ window.onload = function init() {
     gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vPosition);
 
-    var tBuffer = gl.createBuffer();
-    gl.bindBuffer( gl.ARRAY_BUFFER, tBuffer);
-    gl.bufferData( gl.ARRAY_BUFFER, flatten(texCoordsArray), gl.STATIC_DRAW );
-    var vTexCoord = gl.getAttribLocation( program, "vTexCoord");
-    gl.vertexAttribPointer(vTexCoord, 2, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(vTexCoord);
+    sphere1.calculatePoints();
+    cone1.calculatePoints();
+    cube1.calculatePoints();
 
+    img = document.createElement("img");
+    img.src = "Images/Rainbow.jpg";
     var imageSrc = document.getElementById("texImageMenu");
     imageSrc.addEventListener('change', function() {
+        console.log("yo");
         let selection = imageSrc.value;
-        var img = document.createElement('img'); 
-        //img.visibility = "hidden";
-        if (selection == "No Image")
+        switch(selection)
         {
-            configureTextureNoImage(image2);
-        }
-        else
-        {
-            switch(selection)
-            {
-                case "Default":
-                    img.src = "Images/Default.png";
-                    break;
-                case "1080x1080":
-                    img.src = "Images/1080x1080.jpg";
-                    break;
-                case "Logo":
-                    img.src = "Images/Logo.gif";
-                    break;
-                case "Rainbow":
-                    img.src = "Images/Rainbow.jpg";
-                    break;
-            }
-            configureTextureImage(img);
-        }
+            case "Default":
+                img.src = "Images/Default.png";
+                break;
+            case "1080x1080":
+                img.src = "Images/1080x1080.jpg";
+                break;
+            case "Logo":
+                img.src = "Images/Logo.gif";
+                break;
+            case "Rainbow":
+                img.src = "Images/Rainbow.jpg";
+                break;
+        }       
     });
-    configureTextureNoImage(image2);
 
     thetaLoc = gl.getUniformLocation(program, "theta");
     
@@ -363,7 +260,7 @@ window.onload = function init() {
 
 
 var render = function(){
-    gl.clear(gl.COLOR_BUFFER_BIT);  
+    gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);  
     //if(flag) theta[axis] += 2.0;
     modelView = mat4();
     // modelView = mult(modelView, rotate(theta[xAxis], [1, 0, 0] ));
@@ -377,8 +274,12 @@ var render = function(){
     
     //time += 1;
 
+    sphere1.mapTexture();
     sphere1.render();
+    cone1.mapTexture();
     cone1.render();
+    cube1.mapTexture(img);
+    cube1.render();
 
     // eye = cameraTransform[ "pos"];
     // let lookDirection = getLookDirection( 100, 2);
@@ -394,7 +295,6 @@ var render = function(){
             "modelViewMatrix"), false, flatten(modelView) );
 
     gl.uniform1i(gl.getUniformLocation(program, "i"),0);
-    // gl.drawArrays( gl.TRIANGLES, 0, 36 );
 
     requestAnimFrame(render);
 }

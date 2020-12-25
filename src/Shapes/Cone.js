@@ -6,8 +6,8 @@ class Cone {
         this.points = [];
         this.colors = [];
         this.normals = [];
-        this.stackCount = 20;
-        this.sectorCount = 20;
+        this.texPoints = [];
+        this.sectorCount = 50;
 
         // other details such as material, color etc.
         this.color = vec4(0, 0, 1, 1.0);
@@ -65,6 +65,21 @@ class Cone {
                 // Push normals
 
                 // Push textures
+                this.texPoints.push(i/this.stackCount, i/this.sectorCount);
+                this.texPoints.push(i/this.stackCount, i/this.sectorCount);
+                this.texPoints.push(i/this.stackCount, i/this.sectorCount);
+
+                this.texPoints.push(i/this.stackCount, i/this.sectorCount);
+                this.texPoints.push(i/this.stackCount, i/this.sectorCount);
+                this.texPoints.push(i/this.stackCount, i/this.sectorCount);
+
+                this.texPoints.push(i/this.stackCount, i/this.sectorCount);
+                this.texPoints.push(i/this.stackCount, i/this.sectorCount);
+                this.texPoints.push(i/this.stackCount, i/this.sectorCount);
+
+                this.texPoints.push(i/this.stackCount, i/this.sectorCount);
+                this.texPoints.push(i/this.stackCount, i/this.sectorCount);
+                this.texPoints.push(i/this.stackCount, i/this.sectorCount);
             }
 
             for (i = 0; i < this.sectorCount*12; i++)
@@ -73,8 +88,30 @@ class Cone {
             }
         };
 
+        this.mapTexture = function (image = null) {
+            let texture;
+            if (image == null)
+                texture = configureTextureNoImage(image2);
+            else
+                texture = configureTextureImage(image);
+                
+            framebuffer = gl.createFramebuffer();
+            gl.bindFramebuffer( gl.FRAMEBUFFER, framebuffer);
+    
+            gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+     
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    
+            var tBuffer = gl.createBuffer();
+            gl.bindBuffer( gl.ARRAY_BUFFER, tBuffer);
+            gl.bufferData( gl.ARRAY_BUFFER, flatten(this.texPoints), gl.STATIC_DRAW );
+            var vTexCoord = gl.getAttribLocation( program, "vTexCoord");
+            gl.vertexAttribPointer(vTexCoord, 2, gl.FLOAT, false, 0, 0);
+            gl.enableVertexAttribArray(vTexCoord);
+        }
+
         this.render = function () {
-            this.calculatePoints();
+            //this.calculatePoints();
 
             var m = mat4();
             m = translate(this.center[0], this.center[1], this.center[2]);
