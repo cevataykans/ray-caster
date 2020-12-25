@@ -247,16 +247,16 @@ window.onload = function init() {
             switch(selection)
             {
                 case "Default":
-                    img.src = "Default.png";
+                    img.src = "Images/Default.png";
                     break;
                 case "1080x1080":
-                    img.src = "1080x1080.jpg";
+                    img.src = "Images/1080x1080.jpg";
                     break;
                 case "Logo":
-                    img.src = "Logo.gif";
+                    img.src = "Images/Logo.gif";
                     break;
                 case "Rainbow":
-                    img.src = "Rainbow.jpg";
+                    img.src = "Images/Rainbow.jpg";
                     break;
             }
             configureTextureImage(img);
