@@ -1,6 +1,7 @@
-function Square( center) 
+function Square( center, sideLength) 
 {
     this.center = center;
+    this.sideLength = sideLength;
     this.triangles = [];
     this.hitTriangle = null;
 
@@ -15,9 +16,9 @@ function Square( center)
         var thirdP = vec4(0, 0, 0, 0);
         for ( let i = 0; i < 3; i++) // MAKE DEEP COPY SO THAT PHYSICAL TRIANGLE IS NOT AFFECTED BY THE TRANSFORMATION //TODO: make physical apperance comply with virtual center!
         {
-            firstP[ i] = firstPoint[ i];
-            secP[ i] = secPoint[ i];
-            thirdP[ i] = thirdPoint[ i];
+            firstP[ i] = firstPoint[ i] * this.sideLength;
+            secP[ i] = secPoint[ i] * this.sideLength;
+            thirdP[ i] = thirdPoint[ i] * this.sideLength;
         }
 
         firstP = add( this.center, firstP);

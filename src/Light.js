@@ -5,7 +5,7 @@ var LightTypes = {
 
 var lightSources = []; // GLOBAL LIGHT SOURCES USED BY THE RAY TRACING
 lightSources.push( new PointLight( 500, vec4( 0, 1, -1, 0)));
-lightSources.push( new PointLight( 350, vec4( -2.5, -1, -1, 0)));
+lightSources.push( new PointLight( 350, vec4( -2.5, 1, -1, 0)));
 
 //TODO, TALHA, please move the light attributes here, put whatever you need, please do not touch those that are marked as RC which means used by ray caster at the moment, 
 // if you wish, you can use the same position, intensity, color etc used by the ray caster to have a single system

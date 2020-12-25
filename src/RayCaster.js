@@ -174,11 +174,11 @@ function RayCaster()
         var shapeAlbedo = surfaceDetails.material.albedo;
         var hitNormal = surfaceDetails.hitNormal;
 
-        // Light sahder specific data
-        var lightShaderData = sceneLight.getLightShadingData( hitPoint);
-        var reverseLightDir = multScalar( lightShaderData.lightDirection, -1);
-        var lightAmount = lightShaderData.lightAmount;
-        var lightTravelLimit = lightShaderData.travelLimit;
+        // // Light sahder specific data
+        // var lightShaderData = sceneLight.getLightShadingData( hitPoint);
+        // var reverseLightDir = multScalar( lightShaderData.lightDirection, -1);
+        // var lightAmount = lightShaderData.lightAmount;
+        // var lightTravelLimit = lightShaderData.travelLimit;
 
         //TODO if check reflection and rafraction of the shapeToShadeDetails.materialType
 

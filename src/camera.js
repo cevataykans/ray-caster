@@ -72,11 +72,11 @@ function lookLeftRight( angleRadians)
 {
     camLocalEulerAngles[ 1] += angleRadians;
 
-    // var rotationMatrix = rotate( camLocalEulerAngles[ 1], camUp);
-    // camForward = multMV( rotationMatrix, [ ...camForward, 0]);
-    // camForward = vec3( camForward[0], camForward[1], camForward[2]);
-    // camRight = cross( camForward, camUp);
-    // camRight = normalize( camRight);
+    var rotationMatrix = rotate( camLocalEulerAngles[ 1], camUp);
+    camForward = multMV( rotationMatrix, [ ...camForward, 0]);
+    camForward = vec3( camForward[0], camForward[1], camForward[2]);
+    camRight = cross( camForward, camUp);
+    camRight = normalize( camRight);
 };
 
 function lookUpDown( angleRadians)
@@ -151,7 +151,7 @@ function lockChangeAlert() {
 function updateCameraAngle(e)
 {
     lookLeftRight( e.movementX / camSensitivity );
-    lookUpDown(  e.movementY / camSensitivity );
+    //lookUpDown(  e.movementY / camSensitivity );
     // cameraTransform[ "rot"][ 1] += ( e.movementX / camSensitivity);
     // cameraTransform[ "rot"][ 0] -= ( e.movementY / camSensitivity);
 
