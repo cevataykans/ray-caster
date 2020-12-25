@@ -4,8 +4,6 @@ var traceDepth = 1;
 
 var hitCount = 0;
 var camTf;
-var projectionMat;
-console.log( "END");
 
 function RayCaster()
 {

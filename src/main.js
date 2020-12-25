@@ -56,12 +56,12 @@ square.addTriangle( vec4( -0.5, -0.5, -0.5 ), vec4( -0.5, -0.5, 0.5 ), vec4( -0.
 square.addTriangle( vec4( -0.5, 0.5, 0.5 ), vec4( -0.5, 0.5, -0.5 ), vec4( -0.5, -0.5, 0.5 ) ); // right side complementary
 square.addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( 0.5, -0.5, 0.5 ), vec4( 0.5, 0.5, -0.5 ) ); // left side
 square.addTriangle( vec4( 0.5, 0.5, 0.5 ), vec4( 0.5, 0.5, -0.5 ), vec4( 0.5, -0.5, 0.5 ) ); // left side complementary
-shapes.push( square);
+shapes.push( square); // TODO: REFACTOR NEED UI TO MANIPULATE SHAPES AND DYNAMIC SHAPE CREATION AND SHAPRE MATERIAL MANIPULATION
 
-//var sceneLight = new DistantLight( 1, vec4(1, 0, 0, 0));
-var sceneLight = new PointLight( 100, vec4( 0, 0, -1, 0));
-console.log( "SCENE LIGHT");
-console.log( sceneLight);
+// //var sceneLight = new DistantLight( 1, vec4(1, 0, 0, 0));
+// var sceneLight = new PointLight( 100, vec4( 0, 0, -1, 0));
+// console.log( "SCENE LIGHT");
+// console.log( sceneLight); // DEPRECIATED MOVED TO THE LIGHT.js
 
 var time = 0;
 
