@@ -131,7 +131,7 @@ function RayCaster()
         }
     };
 
-    this.findClosestIntersectWithShape = function( rayOrigin, rayDir)
+    this.findClosestIntersectWithShape = function( rayOrigin, rayDir, distanceLimit = null)
     {
         //find closest interaction point with and 
         var maxDistance = Number.MAX_SAFE_INTEGER;
@@ -152,8 +152,15 @@ function RayCaster()
                 }
             }
         }
+
+        // if this is a secondary ray that could be shot to a point source light, check if ray found a valid shape
+        if ( !intersectionDataToReturn || ( distanceLimit && intersectionDataToReturn.hitDistance > distanceLimit))
+        {
+            return null;
+        }
+
         // return shape with intersection details!
-        return intersectionDataToReturn ? { shape: closestShape, hitpoint: intersectionDataToReturn.hitPoint } : null;
+        return { shape: closestShape, hitpoint: intersectionDataToReturn.hitPoint };
     };
 
     var first = true;
@@ -164,13 +171,17 @@ function RayCaster()
         {
             throw "INVALID HIT POINT";
         }
+        // surface specific shader data
         var hitShape = hitObject.shape;
         var surfaceDetails = hitShape.getShapeSurfaceData( hitPoint, rayDir);
         var shapeAlbedo = surfaceDetails.material.albedo;
         var hitNormal = surfaceDetails.hitNormal;
-        var reverseLightDir = multScalar( sceneLight.getLightDirection( hitPoint), -1);
 
-        var colorToReturn = multScalar( mult( multScalar( shapeAlbedo, 1.0 / Math.PI), sceneLight.lightAmount), Math.max( 0, dot( hitNormal, reverseLightDir ) ) );
+        // Light sahder specific data
+        var lightShaderData = sceneLight.getLightShadingData( hitPoint);
+        var reverseLightDir = multScalar( lightShaderData.lightDirection, -1);
+        var lightAmount = lightShaderData.lightAmount;
+        var lightTravelLimit = lightShaderData.travelLimit;
 
         //TODO if check reflection and rafraction of the shapeToShadeDetails.materialType
 
@@ -178,13 +189,16 @@ function RayCaster()
 
         //TODO  else shade it with pong model by checking first shadow
         
-        //shadow trace
+        // Diffuse shading 
+        var colorToReturn = multScalar( mult( multScalar( shapeAlbedo, 1.0 / Math.PI), lightAmount), Math.max( 0, dot( hitNormal, reverseLightDir ) ) );
+
+        // send shadow secondary ray!
         var hitOrigin = add( hitPoint, multScalar( hitNormal, normalShadowBias) );
         if ( hitOrigin[ 3] > 0 && first)
         {
             throw "JUST BEFORE SHADOWING";
         }
-        var closestObject = this.findClosestIntersectWithShape( hitOrigin, reverseLightDir);
+        var closestObject = lightTravelLimit ? this.findClosestIntersectWithShape( hitOrigin, reverseLightDir, lightTravelLimit) : this.findClosestIntersectWithShape( hitOrigin, reverseLightDir);
         if ( closestObject)
         {
             // shade as shadow
@@ -192,7 +206,6 @@ function RayCaster()
             colorToReturn[ 1] = 0;
             colorToReturn[ 2] = 0;
         }
-        
         colorToReturn[ 3] = 1;
         return colorToReturn;
     };

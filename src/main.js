@@ -58,7 +58,8 @@ square.addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( 0.5, -0.5, 0.5 ), vec4( 0.5, 
 square.addTriangle( vec4( 0.5, 0.5, 0.5 ), vec4( 0.5, 0.5, -0.5 ), vec4( 0.5, -0.5, 0.5 ) ); // left side complementary
 shapes.push( square);
 
-var sceneLight = new DistantLight( 20, vec4(1, 0, 0, 0));
+//var sceneLight = new DistantLight( 1, vec4(1, 0, 0, 0));
+var sceneLight = new PointLight( 100, vec4( 0, 0, -1, 0));
 console.log( "SCENE LIGHT");
 console.log( sceneLight);
 

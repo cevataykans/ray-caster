@@ -41,6 +41,11 @@ function executeTests()
     console.log( "TRIANGLE TEST END");
     console.log( "LIGHT TEST");
     var testMAtireal = new Material();
-    console.log( multScalar( mult( multScalar( testMAtireal.albedo, 1.0 / Math.PI), sceneLight.lightAmount), Math.max( 0, dot( vec4( 1, 0, 0, 0), multScalar( rayDir, -1) ) ) ) );
+    // var lightShadeData = sceneLight.getLightShadingData( )
+    // console.log( multScalar( mult( multScalar( testMAtireal.albedo, 1.0 / Math.PI), sceneLight.lightAmount), Math.max( 0, dot( vec4( 1, 0, 0, 0), multScalar( rayDir, -1) ) ) ) );
+    var pLight = new PointLight( 1, vec4( 0, 0, 0, 0));
+    console.log( pLight.getLightShadingData( vec4( 1, 0, 0, 0)) );
+    var dLight = new DistantLight( 1, vec4( 1, 0, 0, 0 ));
+    console.log( dLight.getLightShadingData( vec4( 1, 0, 0, 0)) );
     console.log( "LIGHT TEST END");
 };
