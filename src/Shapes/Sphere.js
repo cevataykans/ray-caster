@@ -129,6 +129,7 @@ class Sphere
             {
                 //this.color[ i]
                 // colorToReturn.push( this.color[ i] * Math.max( 0, dot( normal, multScalar( rayDir, -1) )) );
+                //colorToReturn[i] = colorToReturn[i] * Math.max( 0, dot( normal, multScalar( rayDir, -1) ) );
                 // console.log( "COLOR TO RETURN");
                 // console.log( colorToReturn);
                 // console.log( "LIGHT AMOUNT:");
@@ -143,6 +144,7 @@ class Sphere
                 // console.log( multScalar( mult( multScalar( this.material.albedo, 1.0 / Math.PI), sceneLight.lightAmount), Math.max( 0, dot( normal, multScalar( rayDir, -1) ) ) ));
             }
             //colorToReturn.push( 1);
+            colorToReturn[ 3] = 1;
            
             var texture = vec2();
             texture[ 0] =  (1 + (Math.atan2( hitpoint[ 2], hitpoint[0] ) / Math.PI) ) * 0.5;
