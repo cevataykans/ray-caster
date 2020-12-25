@@ -22,10 +22,11 @@ function Triangle( firstPoint, secPoint, thirdPoint)
     this.ranColor3 = vec4(Math.random(), Math.random(), Math.random(), 1);
     this.u;
     this.v;
+    this.material;
 
-    this.setSurfaceData = function( colorToSet) //TODO 
+    this.setSurfaceData = function( materialOfParent) //TODO 
     {
-        this.color = colorToSet;
+        this.material = materialOfParent;
     };
 
     this.getShapeSurfaceData = function( hitpoint, rayDir) //TODO
@@ -37,7 +38,7 @@ function Triangle( firstPoint, secPoint, thirdPoint)
         var randColor = add( this.ranColor1, add( this.ranColor3, this.ranColor2));
         randColor[ 3] = 1;
 
-        return new SurfaceData( this.normal, randColor, null);
+        return new SurfaceData( this.normal, this.material, null);
     };
 
     this.interactWithRay = function ( rayOrigin, rayDir)

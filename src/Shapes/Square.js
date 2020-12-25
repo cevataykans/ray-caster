@@ -6,6 +6,7 @@ function Square( center)
 
     // other details such as material, color etc.
     this.color = vec4( 1.0, 0.0, 0.0, 1.0);
+    this.material = new Material();
 
     this.addTriangle = function( firstPoint, secPoint, thirdPoint)
     {
@@ -24,7 +25,7 @@ function Square( center)
         thirdP = add( this.center, thirdP);
 
         var triangleToAdd = new Triangle( firstP, secP, thirdP);
-        triangleToAdd.setSurfaceData( this.color); //TODO
+        triangleToAdd.setSurfaceData( this.material); //TODO
         this.triangles.push( triangleToAdd);
     };
 

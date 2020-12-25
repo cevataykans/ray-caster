@@ -124,7 +124,7 @@ class Sphere
         {
             var normal = normalize( subtract( hitpoint, this.center) );
             //var colorToReturn = [];
-            var colorToReturn = multScalar( mult( multScalar( this.material.albedo, 1.0 / Math.PI), sceneLight.lightAmount), Math.max( 0, dot( normal, multScalar( sceneLight.lightDir, -1) ) ) );
+            //var colorToReturn = multScalar( mult( multScalar( this.material.albedo, 1.0 / Math.PI), sceneLight.lightAmount), Math.max( 0, dot( normal, multScalar( sceneLight.lightDir, -1) ) ) );
             for ( let i = 0; i < 3; i++)
             {
                 //this.color[ i]
@@ -144,12 +144,12 @@ class Sphere
                 // console.log( multScalar( mult( multScalar( this.material.albedo, 1.0 / Math.PI), sceneLight.lightAmount), Math.max( 0, dot( normal, multScalar( rayDir, -1) ) ) ));
             }
             //colorToReturn.push( 1);
-            colorToReturn[ 3] = 1;
+            //colorToReturn[ 3] = 1;
            
             var texture = vec2();
             texture[ 0] =  (1 + (Math.atan2( hitpoint[ 2], hitpoint[0] ) / Math.PI) ) * 0.5;
             texture[ 1] = Math.acos( hitpoint[ 1]) / Math.PI;
-            return new SurfaceData( normal, colorToReturn, texture);
+            return new SurfaceData( normal, this.material, texture);
         };
 
         this.interactWithRay = function (rayOrigin, rayDir) 

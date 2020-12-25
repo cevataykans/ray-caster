@@ -117,7 +117,7 @@ function RayCaster()
         if ( closestObject)
         {
             hitCount++;
-            return this.shadePoint( rayOrigin, rayDir, closestObject.shape.getShapeSurfaceData( closestObject.hitpoint, rayDir) );
+            return this.shadePoint( rayOrigin, rayDir, traceDepth - 1, closestObject);
         }
         else
         {
@@ -151,15 +151,36 @@ function RayCaster()
         return intersectionDataToReturn ? { shape: closestShape, hitpoint: intersectionDataToReturn.hitPoint } : null;
     };
 
-    this.shadePoint = function(rayOrigin, rayDir, shapeToShadeDetails) // return color emitted by surface in ray interaction
+    this.shadePoint = function(rayOrigin, rayDir, depth, hitObject) // return color emitted by surface in ray interaction
     {
+        var hitPoint = hitObject.hitpoint; //TODO REFACTOR, simplify
+        var hitShape = hitObject.shape;
+        var surfaceDetails = hitShape.getShapeSurfaceData( hitPoint, rayDir);
+        var shapeAlbedo = surfaceDetails.material.albedo;
+        var hitNormal = surfaceDetails.hitNormal;
+
+        if ( !shapeAlbedo)
+        {
+            console.log( hitObject);
+            console.log( surfaceDetails);
+        }
+        var colorToReturn = multScalar( mult( multScalar( shapeAlbedo, 1.0 / Math.PI), sceneLight.lightAmount), Math.max( 0, dot( hitNormal, multScalar( sceneLight.lightDir, -1) ) ) );
+
         //TODO if check reflection and rafraction of the shapeToShadeDetails.materialType
 
         //TODO check reflection of the shapeToShadeDetails.materialType
 
         //TODO  else shade it with pong model by checking first shadow
         
-        return shapeToShadeDetails.hitColor;
+        // shadow trace
+        // var closestObject = this.findClosestIntersectWithShape( add( hitPoint, multScalar( surfaceDetails.hitNormal, Number.EPSILON) ), multScalar( sceneLight.lightDir, -1) );
+        // if ( closestObject)
+        // {
+        //     // shade as shadow
+        // }
+        
+        colorToReturn[ 3] = 1;
+        return colorToReturn;
     };
 
     this.shadeShadow = function( rayOrigin, rayDir, shapeToShadeDetails)

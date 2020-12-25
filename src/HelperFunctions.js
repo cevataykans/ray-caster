@@ -57,10 +57,10 @@ function InteractionResult( point, distance)
     this.hitDistance = distance;
 };
 
-function SurfaceData( normal, color, texture)
+function SurfaceData( normal, material, texture)
 {
     this.hitNormal = normal;
-    this.hitColor = color;
+    this.material = material;
     this.hitTexture = texture;
 };
 
