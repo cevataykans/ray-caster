@@ -11,6 +11,7 @@ function RayCaster()
 {
     this.pixelList = [];
     this.backgroundColor = vec4( 0, 0, 0, 0.3);
+    var normalShadowBias = Math.pow( 10, -5);
 
     this.castRays = function()
     {
@@ -54,6 +55,10 @@ function RayCaster()
                 rayDirWorld = normalize( rayDirWorld);
                 // console.log( "DIRECTION");
                 // console.log( rayDirWorld);
+                if ( rayDirWorld[ 3] > 0 || rayOriginWorld[ 3] > 0)
+                {
+                    console.log( "PROBLEM! RAY START");
+                }
 
                 var colorAtPixel = this.traceRay( rayOriginWorld, rayDirWorld, traceDepth);
                 if ( colorAtPixel)
@@ -136,7 +141,7 @@ function RayCaster()
         for ( let curShapeIndex = 0; curShapeIndex < shapes.length; curShapeIndex++)
         {
             shapeIntersectionData = shapes[ curShapeIndex].interactWithRay( rayOrigin, rayDir);
-            if ( shapeIntersectionData != null)
+            if ( shapeIntersectionData)
             {
                 // check if this intersection is closer than the max distance, if so, set the closest object with its insersection details!
                 if ( shapeIntersectionData.hitDistance < maxDistance)
@@ -151,20 +156,21 @@ function RayCaster()
         return intersectionDataToReturn ? { shape: closestShape, hitpoint: intersectionDataToReturn.hitPoint } : null;
     };
 
+    var first = true;
     this.shadePoint = function(rayOrigin, rayDir, depth, hitObject) // return color emitted by surface in ray interaction
     {
         var hitPoint = hitObject.hitpoint; //TODO REFACTOR, simplify
+        if ( hitPoint[3] > 0)
+        {
+            throw "INVALID HIT POINT";
+        }
         var hitShape = hitObject.shape;
         var surfaceDetails = hitShape.getShapeSurfaceData( hitPoint, rayDir);
         var shapeAlbedo = surfaceDetails.material.albedo;
         var hitNormal = surfaceDetails.hitNormal;
+        var reverseLightDir = multScalar( sceneLight.lightDir, -1);
 
-        if ( !shapeAlbedo)
-        {
-            console.log( hitObject);
-            console.log( surfaceDetails);
-        }
-        var colorToReturn = multScalar( mult( multScalar( shapeAlbedo, 1.0 / Math.PI), sceneLight.lightAmount), Math.max( 0, dot( hitNormal, multScalar( sceneLight.lightDir, -1) ) ) );
+        var colorToReturn = multScalar( mult( multScalar( shapeAlbedo, 1.0 / Math.PI), sceneLight.lightAmount), Math.max( 0, dot( hitNormal, reverseLightDir ) ) );
 
         //TODO if check reflection and rafraction of the shapeToShadeDetails.materialType
 
@@ -172,12 +178,20 @@ function RayCaster()
 
         //TODO  else shade it with pong model by checking first shadow
         
-        // shadow trace
-        // var closestObject = this.findClosestIntersectWithShape( add( hitPoint, multScalar( surfaceDetails.hitNormal, Number.EPSILON) ), multScalar( sceneLight.lightDir, -1) );
-        // if ( closestObject)
-        // {
-        //     // shade as shadow
-        // }
+        //shadow trace
+        var hitOrigin = add( hitPoint, multScalar( hitNormal, normalShadowBias) );
+        if ( hitOrigin[ 3] > 0 && first)
+        {
+            throw "JUST BEFORE SHADOWING";
+        }
+        var closestObject = this.findClosestIntersectWithShape( hitOrigin, reverseLightDir);
+        if ( closestObject)
+        {
+            // shade as shadow
+            colorToReturn[ 0] = 0;
+            colorToReturn[ 1] = 0;
+            colorToReturn[ 2] = 0;
+        }
         
         colorToReturn[ 3] = 1;
         return colorToReturn;

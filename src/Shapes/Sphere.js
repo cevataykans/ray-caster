@@ -1,6 +1,6 @@
 class Sphere 
 {
-    constructor(center = vec3(0, 0, 0), radius = 1) 
+    constructor(center = vec4(0, 0, 0, 0), radius = 1) 
     {
         this.center = center;
         this.radius = radius;
@@ -9,6 +9,7 @@ class Sphere
         this.normals = [];
         this.stackCount = 20;
         this.sectorCount = 20;
+        this.type = false;
 
         // other details such as material, color etc.
         this.color = vec4( 1.0, 0.5, 0.5, 1.0);
@@ -173,6 +174,10 @@ class Sphere
                 // Find the real hit point with the returned parameter t
                 var hitPoint = interactionParams[ 0];
                 hitPoint = add( rayOrigin, multScalar( rayDir, hitPoint ) );
+                if ( hitPoint[ 3] > 0)
+                {
+                    throw "Hit point error";
+                }
 
                 // do not compare points, find normal, distance and other required details.
                 var hitDistance = efficientDistance( rayOrigin, hitPoint);
@@ -206,6 +211,10 @@ class Sphere
                 }
                 var realHitNormal = normalize(subtract(realHitPoint, this.center));
                 var hitColor = this.color;
+                if ( realHitPoint[ 3] > 0)
+                {
+                    throw "Hit point error";
+                }
 
                 var interactionResult = new InteractionResult(realHitPoint, realHitDistance, realHitNormal, hitColor);
                 return interactionResult;

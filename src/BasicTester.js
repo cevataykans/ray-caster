@@ -25,8 +25,8 @@ function executeTests()
     console.log( "TRIANGLE AC: " + triangle.edgeAC);
     console.log( "TRIANGLE LENGTH/AREA: " + triangle.triCompleteArea);
     console.log( "TRIANGLE NORMAL: " + triangle.normal);
-    rayOrigin = new vec4( 10, 0, 0);
-    rayDir = new vec4( -1, 0, 0);
+    rayOrigin = new vec4( 10, 0, 0, 0);
+    rayDir = new vec4( -1, 0, 0, 0);
     var intersection = triangle.interactWithRay( rayOrigin, rayDir);
     if ( intersection != null)
     {

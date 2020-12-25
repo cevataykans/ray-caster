@@ -10,9 +10,9 @@ function Square( center)
 
     this.addTriangle = function( firstPoint, secPoint, thirdPoint)
     {
-        var firstP = vec4();
-        var secP = vec4();
-        var thirdP = vec4();
+        var firstP = vec4(0, 0, 0, 0);
+        var secP = vec4(0, 0, 0, 0);
+        var thirdP = vec4(0, 0, 0, 0);
         for ( let i = 0; i < 3; i++) // MAKE DEEP COPY SO THAT PHYSICAL TRIANGLE IS NOT AFFECTED BY THE TRANSFORMATION //TODO: make physical apperance comply with virtual center!
         {
             firstP[ i] = firstPoint[ i];
