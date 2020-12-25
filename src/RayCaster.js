@@ -168,7 +168,7 @@ function RayCaster()
         var surfaceDetails = hitShape.getShapeSurfaceData( hitPoint, rayDir);
         var shapeAlbedo = surfaceDetails.material.albedo;
         var hitNormal = surfaceDetails.hitNormal;
-        var reverseLightDir = multScalar( sceneLight.lightDir, -1);
+        var reverseLightDir = multScalar( sceneLight.getLightDirection( hitPoint), -1);
 
         var colorToReturn = multScalar( mult( multScalar( shapeAlbedo, 1.0 / Math.PI), sceneLight.lightAmount), Math.max( 0, dot( hitNormal, reverseLightDir ) ) );
 
@@ -195,11 +195,6 @@ function RayCaster()
         
         colorToReturn[ 3] = 1;
         return colorToReturn;
-    };
-
-    this.shadeShadow = function( rayOrigin, rayDir, shapeToShadeDetails)
-    {
-
     };
 
     this.debugImage = function(pixelList)

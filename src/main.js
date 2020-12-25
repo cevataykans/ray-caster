@@ -42,8 +42,8 @@ var vertexColors = [
 const sphere1 = new Sphere(vec3(0,2.5,0), 1);
 const cone1 = new Cone(vec3(0,0,0), 1, 3);
 
-var shapes = [ new Sphere( vec4( 0, 0, 0, 0), 0.5) ];//, new Sphere( vec4( 2, 0, 0, 0), 1) ]; //TALHA IF YOU WANT YOUR SHAPES TO BE RENDERED YOU NEED TO PUT THEM INTO THIS LIST
-var square = new Square( vec4( 1.5, 0, 0, 0));
+var shapes = [ new Sphere( vec4( -1.5, 0, 0, 0), 0.5), new Sphere( vec4( 2, 0, 0, 0), 1) ]; //TALHA IF YOU WANT YOUR SHAPES TO BE RENDERED YOU NEED TO PUT THEM INTO THIS LIST
+var square = new Square( vec4( 0, 0, 0, 0));
 square.addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ), vec4( 0.5, 0.5, -0.5 ) ); // front
 square.addTriangle( vec4( -0.5, 0.5, -0.5 ), vec4( 0.5, 0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ) ); // front complementary
 square.addTriangle( vec4( 0.5, -0.5, 0.5 ), vec4( -0.5, -0.5, 0.5 ), vec4( 0.5, 0.5, 0.5 ) ); // back
@@ -58,7 +58,7 @@ square.addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( 0.5, -0.5, 0.5 ), vec4( 0.5, 
 square.addTriangle( vec4( 0.5, 0.5, 0.5 ), vec4( 0.5, 0.5, -0.5 ), vec4( 0.5, -0.5, 0.5 ) ); // left side complementary
 shapes.push( square);
 
-var sceneLight = new Light( 20);
+var sceneLight = new DistantLight( 20, vec4(1, 0, 0, 0));
 console.log( "SCENE LIGHT");
 console.log( sceneLight);
 
