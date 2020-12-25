@@ -8,7 +8,7 @@ var camTf;
 function RayCaster()
 {
     this.pixelList = [];
-    this.backgroundColor = vec4( 0, 0, 0, 0.3);
+    this.backgroundColor = vec4( 1, 1, 1, 0.3);
     var normalShadowBias = Math.pow( 10, -5);
 
     this.castRays = function()
@@ -176,7 +176,7 @@ function RayCaster()
         var hitNormal = surfaceDetails.hitNormal;
         var hitOrigin = add( hitPoint, multScalar( hitNormal, normalShadowBias) );
         var hitColor = surfaceDetails.material.color;
-        if ( hitOrigin[ 3] > 0 && first)
+        if ( hitOrigin[ 3] > 0)
         {
             throw "JUST BEFORE SHADOWING";
         }
@@ -187,11 +187,8 @@ function RayCaster()
         if ( shapeMaterialType === MaterialTypes.reflection ) //TODO check reflection of the shapeToShadeDetails.materialType
         {
             var reflectionVector = reflectVector( rayDir, hitNormal);
-            if ( length( reflectionVector) > 1)
-            {
-                normalize( reflectionVector);
-            }
-            colorToreturn = add( colorToReturn, this.traceRay( hitOrigin, reflectionVector, depth - 1 ) );
+            normalize( reflectionVector);
+            colorToReturn = add( colorToReturn, multScalar( this.traceRay( hitOrigin, reflectionVector, depth - 1 ), 0.8 ) );
         }
         else if ( shapeMaterialType === MaterialTypes.refract ) //TODO if check reflection and rafraction of the shapeToShadeDetails.materialType
         {
@@ -236,7 +233,7 @@ function RayCaster()
         return colorToReturn;
     };
 
-    this.debugImage = function(pixelList)
+    this.debugImage = function()
     {
         console.log( "Painting");
         var debugCanvas = document.getElementById('rayCastCanvas');

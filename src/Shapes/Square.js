@@ -18,7 +18,7 @@ function Cube( center = vec4(0, 0, 0, 0), side = 1)
 
     // other details such as material, color etc.
     this.color = vec4( 1.0, 0.0, 0.0, 1.0);
-    this.material = new Material( MaterialTypes.diffuse, this.color);
+    this.material = new Material( MaterialTypes.reflection, this.color);
 
     this.calculateVertices = function() {
         this.vertices.push(vec4((this.center[0] - this.side/2), (this.center[1] - this.side/2), this.center[2] + this.side/2, 1.0));

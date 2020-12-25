@@ -49,7 +49,7 @@ function executeTests()
     console.log( dLight.getLightShadingData( vec4( 1, 0, 0, 0)) );
     console.log( "LIGHT TEST END");
     console.log( "REFLECT TEST");
-    var reflection = reflectVector( vec4( 1, 0, 0, 0), vec4( -1, 0, 0, 0));
+    var reflection = reflectVector( vec4( 5, 0, 0, 0), vec4( -1, 0, 0, 0));
     console.log( reflection);
     reflection = reflectVector( vec4( 1, 1, 0, 0), vec4( 0, 1, 0, 0));
     console.log( reflection);
