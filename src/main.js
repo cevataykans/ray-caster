@@ -24,7 +24,11 @@ const cube1 = new Cube(vec3(-3,1,2), 3);
 var allShapes = [];
 
 var shapes = [ new Sphere( vec4( -1.5, 0, 0, 0), 0.5), new Sphere( vec4( 2, 0, 0, 0), 1) ]; //TALHA IF YOU WANT YOUR SHAPES TO BE RENDERED YOU NEED TO PUT THEM INTO THIS LIST
+<<<<<<< HEAD
 var square = new Cube( vec4( 0, 0, 0, 0));
+=======
+var square = new Square( vec4( 0, -6, 0, 0), 10);
+>>>>>>> 73507db646667a388fa97fe86208a15144572ccc
 square.addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ), vec4( 0.5, 0.5, -0.5 ) ); // front
 square.addTriangle( vec4( -0.5, 0.5, -0.5 ), vec4( 0.5, 0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ) ); // front complementary
 square.addTriangle( vec4( 0.5, -0.5, 0.5 ), vec4( -0.5, -0.5, 0.5 ), vec4( 0.5, 0.5, 0.5 ) ); // back
@@ -37,12 +41,12 @@ square.addTriangle( vec4( -0.5, -0.5, -0.5 ), vec4( -0.5, -0.5, 0.5 ), vec4( -0.
 square.addTriangle( vec4( -0.5, 0.5, 0.5 ), vec4( -0.5, 0.5, -0.5 ), vec4( -0.5, -0.5, 0.5 ) ); // right side complementary
 square.addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( 0.5, -0.5, 0.5 ), vec4( 0.5, 0.5, -0.5 ) ); // left side
 square.addTriangle( vec4( 0.5, 0.5, 0.5 ), vec4( 0.5, 0.5, -0.5 ), vec4( 0.5, -0.5, 0.5 ) ); // left side complementary
-shapes.push( square);
+shapes.push( square); // TODO: REFACTOR NEED UI TO MANIPULATE SHAPES AND DYNAMIC SHAPE CREATION AND SHAPRE MATERIAL MANIPULATION
 
-//var sceneLight = new DistantLight( 1, vec4(1, 0, 0, 0));
-var sceneLight = new PointLight( 100, vec4( 0, 0, -1, 0));
-console.log( "SCENE LIGHT");
-console.log( sceneLight);
+// //var sceneLight = new DistantLight( 1, vec4(1, 0, 0, 0));
+// var sceneLight = new PointLight( 100, vec4( 0, 0, -1, 0));
+// console.log( "SCENE LIGHT");
+// console.log( sceneLight); // DEPRECIATED MOVED TO THE LIGHT.js
 
 var time = 0;
 

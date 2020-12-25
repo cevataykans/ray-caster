@@ -4,8 +4,6 @@ var traceDepth = 1;
 
 var hitCount = 0;
 var camTf;
-var projectionMat;
-console.log( "END");
 
 function RayCaster()
 {
@@ -163,7 +161,6 @@ function RayCaster()
         return { shape: closestShape, hitpoint: intersectionDataToReturn.hitPoint };
     };
 
-    var first = true;
     this.shadePoint = function(rayOrigin, rayDir, depth, hitObject) // return color emitted by surface in ray interaction
     {
         var hitPoint = hitObject.hitpoint; //TODO REFACTOR, simplify
@@ -177,11 +174,11 @@ function RayCaster()
         var shapeAlbedo = surfaceDetails.material.albedo;
         var hitNormal = surfaceDetails.hitNormal;
 
-        // Light sahder specific data
-        var lightShaderData = sceneLight.getLightShadingData( hitPoint);
-        var reverseLightDir = multScalar( lightShaderData.lightDirection, -1);
-        var lightAmount = lightShaderData.lightAmount;
-        var lightTravelLimit = lightShaderData.travelLimit;
+        // // Light sahder specific data
+        // var lightShaderData = sceneLight.getLightShadingData( hitPoint);
+        // var reverseLightDir = multScalar( lightShaderData.lightDirection, -1);
+        // var lightAmount = lightShaderData.lightAmount;
+        // var lightTravelLimit = lightShaderData.travelLimit;
 
         //TODO if check reflection and rafraction of the shapeToShadeDetails.materialType
 
@@ -190,22 +187,49 @@ function RayCaster()
         //TODO  else shade it with pong model by checking first shadow
         
         // Diffuse shading 
-        var colorToReturn = multScalar( mult( multScalar( shapeAlbedo, 1.0 / Math.PI), lightAmount), Math.max( 0, dot( hitNormal, reverseLightDir ) ) );
+        var curLightColor = vec4( 0, 0, 0, 0);
+        var colorToReturn = vec4( 0, 0, 0, 0);
+        for ( let lightSrcInd = 0; lightSrcInd < lightSources.length; lightSrcInd++) // send ray for each light source!
+        {
+            // Light sahder specific data
+            var lightShaderData = lightSources[lightSrcInd].getLightShadingData( hitPoint);
+            var reverseLightDir = multScalar( lightShaderData.lightDirection, -1);
+            var lightAmount = lightShaderData.lightAmount;
+            var lightTravelLimit = lightShaderData.travelLimit;
 
-        // send shadow secondary ray!
-        var hitOrigin = add( hitPoint, multScalar( hitNormal, normalShadowBias) );
-        if ( hitOrigin[ 3] > 0 && first)
-        {
-            throw "JUST BEFORE SHADOWING";
+            curLightColor = multScalar( mult( multScalar( shapeAlbedo, 1.0 / Math.PI), lightAmount), Math.max( 0, dot( hitNormal, reverseLightDir ) ) );
+
+            // send shadow secondary ray!
+            var hitOrigin = add( hitPoint, multScalar( hitNormal, normalShadowBias) );
+            if ( hitOrigin[ 3] > 0 && first)
+            {
+                throw "JUST BEFORE SHADOWING";
+            }
+            var closestObject = lightTravelLimit ? this.findClosestIntersectWithShape( hitOrigin, reverseLightDir, lightTravelLimit) : this.findClosestIntersectWithShape( hitOrigin, reverseLightDir);
+            if ( closestObject)
+            {
+                // shade as shadow
+                curLightColor[ 0] = 0;
+                curLightColor[ 1] = 0;
+                curLightColor[ 2] = 0;
+            }
+            colorToReturn = add( colorToReturn, curLightColor);
         }
-        var closestObject = lightTravelLimit ? this.findClosestIntersectWithShape( hitOrigin, reverseLightDir, lightTravelLimit) : this.findClosestIntersectWithShape( hitOrigin, reverseLightDir);
-        if ( closestObject)
-        {
-            // shade as shadow
-            colorToReturn[ 0] = 0;
-            colorToReturn[ 1] = 0;
-            colorToReturn[ 2] = 0;
-        }
+
+        // // send shadow secondary ray!
+        // var hitOrigin = add( hitPoint, multScalar( hitNormal, normalShadowBias) );
+        // if ( hitOrigin[ 3] > 0 && first)
+        // {
+        //     throw "JUST BEFORE SHADOWING";
+        // }
+        // var closestObject = lightTravelLimit ? this.findClosestIntersectWithShape( hitOrigin, reverseLightDir, lightTravelLimit) : this.findClosestIntersectWithShape( hitOrigin, reverseLightDir);
+        // if ( closestObject)
+        // {
+        //     // shade as shadow
+        //     colorToReturn[ 0] = 0;
+        //     colorToReturn[ 1] = 0;
+        //     colorToReturn[ 2] = 0;
+        // }
         colorToReturn[ 3] = 1;
         return colorToReturn;
     };
