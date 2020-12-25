@@ -12,8 +12,9 @@ class Sphere
 
         // other details such as material, color etc.
         this.color = vec4( 1.0, 0.5, 0.5, 1.0);
+        this.material = new Material(); //TODO: check if naming is correct
 
-        this.calculatePoints = function () 
+        this.calculatePoints = function () //TODO: seperate point generation and ray cast logic in two seperate classes contained in sphere?
         {
             var spherePointIndices = [];
 
@@ -122,12 +123,26 @@ class Sphere
         this.getShapeSurfaceData = function( hitpoint, rayDir)
         {
             var normal = normalize( subtract( hitpoint, this.center) );
-            var colorToReturn = [];
+            //var colorToReturn = [];
+            var colorToReturn = multScalar( mult( multScalar( this.material.albedo, 1.0 / Math.PI), sceneLight.lightAmount), Math.max( 0, dot( normal, multScalar( sceneLight.lightDir, -1) ) ) );
             for ( let i = 0; i < 3; i++)
             {
-                colorToReturn.push( this.color[ i] * Math.max( 0, dot( normal, multScalar( rayDir, -1) )) );
+                //this.color[ i]
+                // colorToReturn.push( this.color[ i] * Math.max( 0, dot( normal, multScalar( rayDir, -1) )) );
+                // console.log( "COLOR TO RETURN");
+                // console.log( colorToReturn);
+                // console.log( "LIGHT AMOUNT:");
+                // console.log( sceneLight.lightAmount);
+                // console.log( "Albedo:");
+                // console.log( this.material.albedo);
+                // console.log( "Albedo * Math Pi :");
+                // console.log( multScalar( this.material.albedo, 1.0 / Math.PI));
+                // console.log( "Albedo * Math Pi * light amount:");
+                // console.log( mult( multScalar( this.material.albedo, 1.0 / Math.PI), sceneLight.lightAmount));
+                // console.log( "WHOLE EQUATION");
+                // console.log( multScalar( mult( multScalar( this.material.albedo, 1.0 / Math.PI), sceneLight.lightAmount), Math.max( 0, dot( normal, multScalar( rayDir, -1) ) ) ));
             }
-            colorToReturn.push( 1);
+            //colorToReturn.push( 1);
            
             var texture = vec2();
             texture[ 0] =  (1 + (Math.atan2( hitpoint[ 2], hitpoint[0] ) / Math.PI) ) * 0.5;

@@ -73,3 +73,8 @@ function shortenVector( vector, length)
     }
     return shortenedVector;
 };
+
+function Material( albedo = vec4( 0.18, 0.18, 0.18, 1))
+{
+    this.albedo = albedo;
+};

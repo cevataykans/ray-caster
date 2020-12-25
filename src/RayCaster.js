@@ -10,6 +10,7 @@ console.log( "END");
 function RayCaster()
 {
     this.pixelList = [];
+    this.backgroundColor = vec4( 0, 0, 0, 0.3);
 
     this.castRays = function()
     {
@@ -108,7 +109,7 @@ function RayCaster()
         if ( traceDepth <= 0.1) // to account for floating points in 0 just in case.
         {
             // return background color!
-            return vec4( 0, 0, 0, 1);
+            return this.backgroundColor;
         }
 
         //TODO trace the ray!
@@ -121,7 +122,7 @@ function RayCaster()
         else
         {
             //return outer space color; 
-            return vec4( 0, 0, 0, 1);
+            return this.backgroundColor;
         }
     };
 

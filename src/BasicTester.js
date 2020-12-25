@@ -39,4 +39,8 @@ function executeTests()
         console.log( "NO INTERSECTION");
     }
     console.log( "TRIANGLE TEST END");
+    console.log( "LIGHT TEST");
+    var testMAtireal = new Material();
+    console.log( multScalar( mult( multScalar( testMAtireal.albedo, 1.0 / Math.PI), sceneLight.lightAmount), Math.max( 0, dot( vec4( 1, 0, 0, 0), multScalar( rayDir, -1) ) ) ) );
+    console.log( "LIGHT TEST END");
 };
