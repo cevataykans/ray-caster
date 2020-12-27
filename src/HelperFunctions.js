@@ -84,7 +84,7 @@ function reflectVector( incoming, surfaceNormal)
 function refractVector( incoming, surfaceNormal, ior)
 {
     var cosIncomingNormal = dot( incoming, surfaceNormal);
-    var normal = [ ...surfaceNormal];
+    var normal = multScalar( surfaceNormal, 1);
     if ( cosIncomingNormal < -1) //CLAMP
     {
         cosIncomingNormal = -1;
@@ -157,10 +157,13 @@ var MaterialTypes = {
     pong: 3,
 };
 
-function Material( type, color, ior = 1, albedo = vec4( 0.18, 0.18, 0.18, 1))
+function Material( type, color, ior = 1, albedo = vec4( 0.18, 0.18, 0.18, 1), diffuse = vec4( 0.5, 0.5, 0.5, 1), specular = vec4( 1, 1, 1, 1), specularN)
 {
     this.type = type;
     this.albedo = albedo;
+    this.specular = specular;
+    this.diffuse = diffuse;
+    this.specularN = specularN;
     this.color = color;
     this.ior = ior;
 };

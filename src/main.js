@@ -23,7 +23,18 @@ const cone1 = new Cone(vec3(0,0,0), 1, 3);
 const cube1 = new Cube(vec3(-3,1,2), 3);
 var allShapes = [];
 
-var shapes = [ new Sphere( vec4( -1.5, 0, 0, 0), 0.5), new Sphere( vec4( 2, 0, 0, 0), 1) ]; //TALHA IF YOU WANT YOUR SHAPES TO BE RENDERED YOU NEED TO PUT THEM INTO THIS LIST
+var shapes = [ ]; //TALHA IF YOU WANT YOUR SHAPES TO BE RENDERED YOU NEED TO PUT THEM INTO THIS LIST
+shapes.push( new Sphere( vec4( -1.5, 0, 0, 0), 0.5) );
+shapes.push( new Sphere( vec4( 2, 0, 0, 0), 1) );
+var refractiveSphere = new Sphere( vec4( 0, 1, 0, 0), 1);
+refractiveSphere.material = new Material( MaterialTypes.refractandreflect, vec4( 1, 1, 1, 1), 1.5);
+console.log( "SPHERE MATERIAL");
+console.log( refractiveSphere.material);
+shapes.push( refractiveSphere);
+var pongSphere = new Sphere( vec4( 0, 1, -2, 0), 0.25 );
+pongSphere.material = new Material( MaterialTypes.pong, vec4( 0, 1, 1, 1), null, vec4( 0.18, 0.18, 0.18, 1), vec4( 0.8, 0.8, 0.8, 1), vec4( 0.1, 0.1, 0.1, 1), 1200);
+shapes.push( pongSphere);
+//shapes.push( new Sphere( vec4( -1, 0, -2, 0), 0.125) );
 var square = new Cube( vec4( 0, -6, 0, 0), 10);
 square.addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ), vec4( 0.5, 0.5, -0.5 ) ); // front
 square.addTriangle( vec4( -0.5, 0.5, -0.5 ), vec4( 0.5, 0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ) ); // front complementary

@@ -58,7 +58,7 @@ function RayCaster()
                     console.log( "PROBLEM! RAY START");
                 }
 
-                var colorAtPixel = this.traceRay( rayOriginWorld, rayDirWorld, traceDepth);
+                var colorAtPixel = this.traceRay( rayOriginWorld, rayDirWorld, traceDepth, RayType.PRIMARY);
                 if ( colorAtPixel)
                 {
                     //TODO store color!
@@ -107,7 +107,7 @@ function RayCaster()
     };    
 
 
-    this.traceRay = function( rayOrigin, rayDir, traceDepth)
+    this.traceRay = function( rayOrigin, rayDir, traceDepth, rayType)
     {
         if ( traceDepth <= 0.1) // to account for floating points in 0 just in case.
         {
@@ -116,7 +116,7 @@ function RayCaster()
         }
 
         //TODO trace the ray!
-        var closestObject = this.findClosestIntersectWithShape( rayOrigin, rayDir);
+        var closestObject = this.findClosestIntersectWithShape( rayOrigin, rayDir, null, rayType);
         if ( closestObject)
         {
             hitCount++;
@@ -129,7 +129,7 @@ function RayCaster()
         }
     };
 
-    this.findClosestIntersectWithShape = function( rayOrigin, rayDir, distanceLimit = null)
+    this.findClosestIntersectWithShape = function( rayOrigin, rayDir, distanceLimit = null, rayType = null)
     {
         //find closest interaction point with and 
         var maxDistance = Number.MAX_SAFE_INTEGER;
@@ -141,6 +141,13 @@ function RayCaster()
             shapeIntersectionData = shapes[ curShapeIndex].interactWithRay( rayOrigin, rayDir);
             if ( shapeIntersectionData)
             {
+                // ignore
+                if ( rayType && rayType === RayType.SHADOW && shapes[curShapeIndex].material.type === MaterialTypes.refractandreflect)
+                {
+                    console.log( "IGNORED!");
+                    continue;
+                }
+
                 // check if this intersection is closer than the max distance, if so, set the closest object with its insersection details!
                 if ( shapeIntersectionData.hitDistance < maxDistance)
                 {
@@ -177,19 +184,21 @@ function RayCaster()
         var hitOrigin = add( hitPoint, multScalar( hitNormal, normalShadowBias) );
         var hitColor = surfaceDetails.material.color;
         var hitIor = surfaceDetails.material.ior;
+        var hitSpecularN = surfaceDetails.material.specularN;
         if ( hitOrigin[ 3] > 0)
         {
             throw "JUST BEFORE SHADOWING";
         }
 
-        var curLightColor = vec4( 0, 0, 0, 0);
+        var diffuseColor = vec4( 0, 0, 0, 0);
+        var specularColor = vec4( 0, 0, 0, 0);
         var colorToReturn = vec4( 0, 0, 0, 0);
 
         if ( shapeMaterialType === MaterialTypes.reflection ) //TODO check reflection of the shapeToShadeDetails.materialType
         {
             var reflectionVector = reflectVector( rayDir, hitNormal);
             normalize( reflectionVector);
-            colorToReturn = add( colorToReturn, multScalar( this.traceRay( hitOrigin, reflectionVector, depth - 1 ), 0.8 ) );
+            colorToReturn = add( colorToReturn, multScalar( this.traceRay( hitOrigin, reflectionVector, depth - 1, RayType.OTHER ), 0.8 ) );
         }
         else if ( shapeMaterialType === MaterialTypes.refractandreflect ) //TODO if check reflection and rafraction of the shapeToShadeDetails.materialType
         {
@@ -207,15 +216,15 @@ function RayCaster()
                     throw "NOOOO";
                 }
                 var refractionOrigin = outside ? subtract( hitPoint, bias) : add( hitPoint, bias);
-                refractionColor = this.traceRay( refractionOrigin, refractDir, depth - 1 );
+                refractionColor = this.traceRay( refractionOrigin, refractDir, depth - 1, RayType.OTHER );
             }
 
             var reflectionDir = reflectVector( rayDir, hitNormal);
             normalize( reflectionDir);
             var reflectionOrigin = outside ? add( hitPoint, bias) : subtract( hitPoint, bias);
-            var reflectionColor = this.traceRay( reflectionOrigin, reflectionDir, depth - 1 );
+            var reflectionColor = this.traceRay( reflectionOrigin, reflectionDir, depth - 1, RayType.OTHER );
 
-            colorToReturn = add( colorToReturn, add( multScalar(reflectionColor, fresnelCofactor ), multScalar( refractionColor, (1 - fresnelCofactor) ) ) );
+            colorToReturn = add( colorToReturn, add( multScalar(reflectionColor, fresnelCofactor ), multScalar( refractionColor, ( 1- fresnelCofactor) ) ) );
         }
         else if ( shapeMaterialType === MaterialTypes.diffuse ) //TODO  else shade it with pong model by checking first shadow
         {
@@ -236,24 +245,68 @@ function RayCaster()
                 {
                     lightAmount = multScalar( hitColor, lightIntensity);
                 }
-    
-                curLightColor = multScalar( mult( multScalar( shapeAlbedo, 1.0 / Math.PI), lightAmount), Math.max( 0, dot( hitNormal, reverseLightDir ) ) );
+                
+                diffuseColor = multScalar( mult( multScalar( shapeAlbedo, 1.0 / Math.PI), lightAmount), Math.max( 0, dot( hitNormal, reverseLightDir ) ) );
     
                 // send shadow secondary ray!
-                var closestObject = lightTravelLimit ? this.findClosestIntersectWithShape( hitOrigin, reverseLightDir, lightTravelLimit) : this.findClosestIntersectWithShape( hitOrigin, reverseLightDir);
+                var closestObject = lightTravelLimit ? this.findClosestIntersectWithShape( hitOrigin, reverseLightDir, lightTravelLimit, RayType.SHADOW) : this.findClosestIntersectWithShape( hitOrigin, reverseLightDir, null, RayType.SHADOW);
                 if ( closestObject)
                 {
                     // shade as shadow
-                    curLightColor[ 0] = 0;
-                    curLightColor[ 1] = 0;
-                    curLightColor[ 2] = 0;
+                    diffuseColor[ 0] = 0;
+                    diffuseColor[ 1] = 0;
+                    diffuseColor[ 2] = 0;
                 }
-                colorToReturn = add( colorToReturn, curLightColor);
+                colorToReturn = add( colorToReturn, diffuseColor);
             }
         }
         else if ( shapeMaterialType === MaterialTypes.pong) //TODO pong illumination with specular addition
         {
+            // Diffuse and specular shading
+            for ( let lightSrcInd = 0; lightSrcInd < lightSources.length; lightSrcInd++) // send ray for each light source!
+            {
+                // Light sahder specific data
+                var lightShaderData = lightSources[lightSrcInd].getLightShadingData( hitPoint);
+                var reverseLightDir = multScalar( lightShaderData.lightDirection, -1);
+                var lightIntensity = lightShaderData.lightIntensity;
+                var lightTravelLimit = lightShaderData.travelLimit;
+                var lightAmount;
+                if ( lightShaderData.lightType === LightTypes.POINT)
+                {
+                    lightAmount = multScalar(  multScalar( hitColor, lightIntensity), 1.0 / ( 4 * Math.PI * lightTravelLimit) );
+                }
+                else if ( lightShaderData.lightType === LightTypes.DISTANT)
+                {
+                    lightAmount = multScalar( hitColor, lightIntensity);
+                }
+    
+                // shade diffuse
+                tempDiffuseColor = multScalar( mult( multScalar( shapeAlbedo, 1.0 / Math.PI), lightAmount), Math.max( 0, dot( hitNormal, reverseLightDir ) ) );
+    
+                // shade specular
+                var lightReflectDir = reflectVector( lightShaderData.lightDirection, hitNormal);
+                normalize( lightReflectDir);
+                tempSpecularColor =  multScalar( lightAmount, Math.pow( Math.max( 0, dot( lightReflectDir, multScalar( rayDir, -1) ) ), hitSpecularN) );
 
+                // send shadow secondary ray!
+                var closestObject = lightTravelLimit ? this.findClosestIntersectWithShape( hitOrigin, reverseLightDir, lightTravelLimit, RayType.SHADOW) : this.findClosestIntersectWithShape( hitOrigin, reverseLightDir, null, RayType.SHADOW);
+                if ( closestObject)
+                {
+                    // shade as shadow
+                    tempDiffuseColor[ 0] = 0;
+                    tempDiffuseColor[ 1] = 0;
+                    tempDiffuseColor[ 2] = 0;
+                    tempSpecularColor[ 0] = 0;
+                    tempSpecularColor[ 1] = 0;
+                    tempSpecularColor[ 2] = 0;
+                }
+                diffuseColor = add( diffuseColor, tempDiffuseColor);
+                specularColor = add( specularColor, tempSpecularColor);
+            }
+            // add specular and diffuse color, then return
+            diffuseColor = mult( diffuseColor, surfaceDetails.material.diffuse);
+            specularColor = mult( specularColor, surfaceDetails.material.specular);
+            colorToReturn = add( colorToReturn, add( diffuseColor, specularColor ));
         }
 
         colorToReturn[ 3] = 1;

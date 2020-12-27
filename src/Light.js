@@ -3,10 +3,17 @@ var LightTypes = {
     POINT: 1,
 };
 
+var RayType = {
+    SHADOW: 0,
+    PRIMARY: 1,
+    OTHER: 2,
+};
+
 var lightSources = []; // GLOBAL LIGHT SOURCES USED BY THE RAY TRACING
 //lightSources.push( new PointLight( 500, vec4( 0, 1, -1, 0)));
 lightSources.push( new PointLight( 350, vec4( -1, 0, 0, 0)));
 lightSources.push( new DistantLight( 20, vec4( 1, -1, 0, 0) ) );
+lightSources.push( new PointLight( 500, vec4( 2, 0, -2, 0)));
 
 function DistantLight( intensity, direction = vec4( 0, 0, 1, 0), color = vec4( 0, 0, 1, 1))
 {
