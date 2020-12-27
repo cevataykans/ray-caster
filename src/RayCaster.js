@@ -176,6 +176,7 @@ function RayCaster()
         var hitNormal = surfaceDetails.hitNormal;
         var hitOrigin = add( hitPoint, multScalar( hitNormal, normalShadowBias) );
         var hitColor = surfaceDetails.material.color;
+        var hitIor = surfaceDetails.material.ior;
         if ( hitOrigin[ 3] > 0)
         {
             throw "JUST BEFORE SHADOWING";
@@ -190,9 +191,31 @@ function RayCaster()
             normalize( reflectionVector);
             colorToReturn = add( colorToReturn, multScalar( this.traceRay( hitOrigin, reflectionVector, depth - 1 ), 0.8 ) );
         }
-        else if ( shapeMaterialType === MaterialTypes.refract ) //TODO if check reflection and rafraction of the shapeToShadeDetails.materialType
+        else if ( shapeMaterialType === MaterialTypes.refractandreflect ) //TODO if check reflection and rafraction of the shapeToShadeDetails.materialType
         {
+            var refractionColor = vec4( 0, 0, 0, 0);
+            var fresnelCofactor = fresnelComputation( rayDir, hitNormal, hitIor);
+            var outside = dot( rayDir, hitNormal) < 0;
+            var bias = multScalar( hitNormal, normalShadowBias);
 
+            if ( fresnelCofactor < 1) // compute refraction if it is not a total internal reflection
+            {
+                var refractDir = refractVector( rayDir, hitNormal, hitIor);
+                normalize( refractDir);
+                if ( length( refractDir) <= 0)
+                {
+                    throw "NOOOO";
+                }
+                var refractionOrigin = outside ? subtract( hitPoint, bias) : add( hitPoint, bias);
+                refractionColor = this.traceRay( refractionOrigin, refractDir, depth - 1 );
+            }
+
+            var reflectionDir = reflectVector( rayDir, hitNormal);
+            normalize( reflectionDir);
+            var reflectionOrigin = outside ? add( hitPoint, bias) : subtract( hitPoint, bias);
+            var reflectionColor = this.traceRay( reflectionOrigin, reflectionDir, depth - 1 );
+
+            colorToReturn = add( colorToReturn, add( multScalar(reflectionColor, fresnelCofactor ), multScalar( refractionColor, (1 - fresnelCofactor) ) ) );
         }
         else if ( shapeMaterialType === MaterialTypes.diffuse ) //TODO  else shade it with pong model by checking first shadow
         {
@@ -227,6 +250,10 @@ function RayCaster()
                 }
                 colorToReturn = add( colorToReturn, curLightColor);
             }
+        }
+        else if ( shapeMaterialType === MaterialTypes.pong) //TODO pong illumination with specular addition
+        {
+
         }
 
         colorToReturn[ 3] = 1;
