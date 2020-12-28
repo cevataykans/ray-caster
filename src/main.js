@@ -117,13 +117,9 @@ window.onload = function init() {
     gl.viewport( 0, 0, canvas.width, canvas.height );
     gl.clearColor( 0.5, 0.5, 0.5, 1.0 );
     
-    // DEPTH TESTING IS BROKEN
-    // OBJECTS GET DELETED
-    // CULLING MAY BE INTERFREING IT BUT NOT LIKELY
-    // SOLVE THIS - TO TALHA
 
     //gl.enable(gl.CULL_FACE);
-    //gl.enable(gl.DEPTH_TEST)
+    gl.enable(gl.DEPTH_TEST)
     
     //
     //  Load shaders and initialize attribute buffers
@@ -292,9 +288,9 @@ var render = function(){
     
     //time += 1;
 
-    sphere1.mapTexture();
+    sphere1.mapTexture(img);
     sphere1.render();
-    cone1.mapTexture();
+    cone1.mapTexture(img);
     cone1.render();
     cube1.mapTexture(img);
     cube1.render();

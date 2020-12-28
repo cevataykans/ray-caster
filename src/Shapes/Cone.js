@@ -10,7 +10,7 @@ class Cone {
         this.sectorCount = 50;
 
         // other details such as material, color etc.
-        this.color = vec4(0, 0, 1, 1.0);
+        this.color = vec4(1, 1, 1, 1.0);
 
         this.calculatePoints = function () {
             var cyclinderPointIndices = [];

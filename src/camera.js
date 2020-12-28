@@ -7,7 +7,7 @@ var dr = 5.0 * Math.PI/180.0;
 
 var camFovy = 60.0;  // Field-of-view in Y direction angle (in degrees)
 var camAspect = 1.0;       // Viewport aspect ratio
-var camNearPers = 0;
+var camNearPers = 0.1;
 var camFarPers = 100;
 
 var camSensitivity = 200.0;
