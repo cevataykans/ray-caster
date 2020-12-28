@@ -40,26 +40,32 @@ function Cube( center = vec4(0, 0, 0, 0), side = 1)
         normal = normalize(normal);
 
         this.points.push(this.vertices[a]); 
+        this.colors.push(this.color);
         this.normals.push(normal); 
         this.texCoords.push(this.texCoord[0]);
 
         this.points.push(this.vertices[b]); 
+        this.colors.push(this.color);
         this.normals.push(normal); 
         this.texCoords.push(this.texCoord[1]);
 
         this.points.push(this.vertices[c]); 
+        this.colors.push(this.color);
         this.normals.push(normal);  
         this.texCoords.push(this.texCoord[2]);
 
         this.points.push(this.vertices[a]);  
+        this.colors.push(this.color);
         this.normals.push(normal); 
         this.texCoords.push(this.texCoord[0]);
 
         this.points.push(this.vertices[c]); 
+        this.colors.push(this.color);
         this.normals.push(normal); 
         this.texCoords.push(this.texCoord[2]);
 
         this.points.push(this.vertices[d]); 
+        this.colors.push(this.color);
         this.normals.push(normal);  
         this.texCoords.push(this.texCoord[3]);
     }
@@ -100,7 +106,7 @@ function Cube( center = vec4(0, 0, 0, 0), side = 1)
         gl.vertexAttribPointer(vTexCoord, 2, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(vTexCoord);
     }
-
+    
     this.render = function () {      
         var m = mat4();
         m = translate(this.center[0], this.center[1], this.center[2]);

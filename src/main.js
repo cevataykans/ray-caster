@@ -22,6 +22,7 @@ const sphere1 = new Sphere(vec3(0,3,0), 1);
 const cone1 = new Cone(vec3(0,0,0), 1, 3);
 const cube1 = new Cube(vec3(-3,1,2), 3);
 const torus1 = new Torus(vec3(-4, 0, 0.5), 0.5, 1);
+const plane1 = new Plane(vec3(0, 0, -2), 2);
 var allShapes = [];
 
 var shapes = [ ]; //TALHA IF YOU WANT YOUR SHAPES TO BE RENDERED YOU NEED TO PUT THEM INTO THIS LIST
@@ -156,6 +157,7 @@ window.onload = function init() {
     cone1.calculatePoints();
     cube1.calculatePoints();
     torus1.calculatePoints();
+    plane1.calculatePoints();
 
     img = document.createElement("img");
     img.src = "Images/Rainbow.jpg";
@@ -189,11 +191,7 @@ window.onload = function init() {
     ambientProduct = mult(lightAmbient, materialAmbient);
     diffuseProduct = mult(lightDiffuse, materialDiffuse);
     specularProduct = mult(lightSpecular, materialSpecular); 
-    
-    document.getElementById("ButtonX").onclick = function(){axis = xAxis;};
-    document.getElementById("ButtonY").onclick = function(){axis = yAxis;};
-    document.getElementById("ButtonZ").onclick = function(){axis = zAxis;};
-    document.getElementById("ButtonT").onclick = function(){flag = !flag};
+
     document.getElementById( "raycastButton").onclick = () =>
     {
         var raycaster = new RayCaster();
@@ -267,26 +265,16 @@ window.onload = function init() {
         gl.drawArrays(gl.TRIANGLES, 0, 36);
 
     }); 
-          
     executeTests();
     render();
 }
 
+var img3 = document.createElement("img");
+img3.src = "Images/Logo.gif";
+
 
 var render = function(){
     gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);  
-    //if(flag) theta[axis] += 2.0;
-    modelView = mat4();
-    // modelView = mult(modelView, rotate(theta[xAxis], [1, 0, 0] ));
-    // modelView = mult(modelView, rotate(theta[yAxis], [0, 1, 0] ));
-    // modelView = mult(modelView, rotate(theta[zAxis], [0, 0, 1] ));
-
-    // lightPosition[0] = Math.sin(0.01*time);
-    // lightPosition[1] = Math.sin(0.01*time);
-    // lightPosition[2] = Math.cos(0.01*time);
-    //console.log(lightPosition[0]);
-    
-    //time += 1;
 
     sphere1.mapTexture(img);
     sphere1.render();
@@ -296,6 +284,9 @@ var render = function(){
     cube1.render();
     torus1.mapTexture(img);
     torus1.render();
+    //plane1.mapTexture(img3);
+    plane1.mapCanvasFromRaycast();
+    plane1.render();
 
     // eye = cameraTransform[ "pos"];
     // let lookDirection = getLookDirection( 100, 2);
@@ -306,9 +297,6 @@ var render = function(){
     projectionMatrix = perspective(camFovy, camAspect, camNearPers, camFarPers);
     gl.uniformMatrix4fv( camModelViewLoc, false, flatten(camModelViewMatrix) );
     gl.uniformMatrix4fv( projectionMatrixLoc, false, flatten(projectionMatrix) );
-
-    gl.uniformMatrix4fv( gl.getUniformLocation(program,
-            "modelViewMatrix"), false, flatten(modelView) );
 
     gl.uniform1i(gl.getUniformLocation(program, "i"),0);
 
