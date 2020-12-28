@@ -29,11 +29,11 @@ var shapes = [ ]; //TALHA IF YOU WANT YOUR SHAPES TO BE RENDERED YOU NEED TO PUT
 shapes.push( new Sphere( vec4( -1.5, 0, 0, 0), 0.5) );
 shapes.push( new Sphere( vec4( 2, 0, 0, 0), 1) );
 var refractiveSphere = new Sphere( vec4( 0, 1, 0, 0), 1);
-refractiveSphere.material = new Material( MaterialTypes.refractandreflect, vec4( 1, 1, 1, 1), 1.5);
+refractiveSphere.material = new Material( MaterialTypes.refractandreflect, vec4( 1, 1, 1, 1), 1.3);
 console.log( "SPHERE MATERIAL");
 console.log( refractiveSphere.material);
 shapes.push( refractiveSphere);
-var pongSphere = new Sphere( vec4( 0, 1, -2, 0), 0.25 );
+var pongSphere = new Sphere( vec4( 0, 1, 2, 0), 0.25 );
 pongSphere.material = new Material( MaterialTypes.pong, vec4( 0, 1, 1, 1), null, vec4( 0.18, 0.18, 0.18, 1), vec4( 0.8, 0.8, 0.8, 1), vec4( 0.1, 0.1, 0.1, 1), 1200);
 shapes.push( pongSphere);
 //shapes.push( new Sphere( vec4( -1, 0, -2, 0), 0.125) );

@@ -1,6 +1,6 @@
 var imageWidth = 512;
 var imageHeight = 512;
-var traceDepth = 3;
+var traceDepth = 5;
 
 var hitCount = 0;
 var camTf;
@@ -224,7 +224,7 @@ function RayCaster()
             var reflectionOrigin = outside ? add( hitPoint, bias) : subtract( hitPoint, bias);
             var reflectionColor = this.traceRay( reflectionOrigin, reflectionDir, depth - 1, RayType.OTHER );
 
-            colorToReturn = add( colorToReturn, add( multScalar(reflectionColor, fresnelCofactor ), multScalar( refractionColor, ( 1- fresnelCofactor) ) ) );
+            colorToReturn = add( colorToReturn, add( multScalar(reflectionColor, fresnelCofactor ), multScalar( refractionColor, ( 1 - fresnelCofactor) ) ) );
         }
         else if ( shapeMaterialType === MaterialTypes.diffuse ) //TODO  else shade it with pong model by checking first shadow
         {
