@@ -21,6 +21,7 @@ var color = new Uint8Array(4);
 const sphere1 = new Sphere(vec3(0,3,0), 1);
 const cone1 = new Cone(vec3(0,0,0), 1, 3);
 const cube1 = new Cube(vec3(-3,1,2), 3);
+const torus1 = new Torus(vec3(-4, 0, 0.5), 0.5, 1);
 var allShapes = [];
 
 var shapes = [ ]; //TALHA IF YOU WANT YOUR SHAPES TO BE RENDERED YOU NEED TO PUT THEM INTO THIS LIST
@@ -57,7 +58,7 @@ shapes.push( square); // TODO: REFACTOR NEED UI TO MANIPULATE SHAPES AND DYNAMIC
 
 var time = 0;
 
-var lightPosition = vec4(-1.0, -1.0, -1.0, 0.0 );
+var lightPosition = vec4(0.0, 1.0, 0.0, 0.0 );
 var lightAmbient = vec4(0.2, 0.2, 0.2, 1.0 );
 var lightDiffuse = vec4( 1.0, 1.0, 1.0, 1.0 );
 var lightSpecular = vec4( 1.0, 1.0, 1.0, 1.0 );
@@ -109,7 +110,6 @@ window.onload = function init() {
     
     gl = WebGLUtils.setupWebGL( canvas );
     if ( !gl ) { alert( "WebGL isn't available" ); }
-    //gl.enable(gl.DEPTH_TEST)
     
     elt = document.getElementById("test");
 
@@ -117,8 +117,14 @@ window.onload = function init() {
     gl.viewport( 0, 0, canvas.width, canvas.height );
     gl.clearColor( 0.5, 0.5, 0.5, 1.0 );
     
-    gl.enable(gl.CULL_FACE);
+    // DEPTH TESTING IS BROKEN
+    // OBJECTS GET DELETED
+    // CULLING MAY BE INTERFREING IT BUT NOT LIKELY
+    // SOLVE THIS - TO TALHA
 
+    //gl.enable(gl.CULL_FACE);
+    //gl.enable(gl.DEPTH_TEST)
+    
     //
     //  Load shaders and initialize attribute buffers
     //
@@ -153,6 +159,7 @@ window.onload = function init() {
     sphere1.calculatePoints();
     cone1.calculatePoints();
     cube1.calculatePoints();
+    torus1.calculatePoints();
 
     img = document.createElement("img");
     img.src = "Images/Rainbow.jpg";
@@ -291,6 +298,8 @@ var render = function(){
     cone1.render();
     cube1.mapTexture(img);
     cube1.render();
+    torus1.mapTexture(img);
+    torus1.render();
 
     // eye = cameraTransform[ "pos"];
     // let lookDirection = getLookDirection( 100, 2);

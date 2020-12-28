@@ -128,8 +128,6 @@ class Sphere
 
         this.render = function () 
         {
-            //this.calculatePoints();
-
             var m = mat4();
             m = translate(this.center[0], this.center[1], this.center[2]);
             gl.uniformMatrix4fv(gl.getUniformLocation(program,
