@@ -1,5 +1,5 @@
 class Cone {
-    constructor(center = vec3(0, 0, 0), radius = 1, height = 2) {
+    constructor(center = vec4(0, 0, 0, 0), radius = 1, height = 2) {
         this.center = center;
         this.radius = radius;
         this.height = height;
@@ -138,7 +138,92 @@ class Cone {
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, this.points.length);
         };
 
-        this.interactWithRay = function (rayOrigin, rayDir) {
+        this.getShapeSurfaceData = function( hitpoint, rayDir)
+        {
+            // calculate gradient
+            var normal = vec4( 2 * hitpoint[0], -2 * hitpoint[1], 2* hitpoint[2], 0);
+            normal = normalize( normal);
+            // put point on gradient
+
+            // return and hope it works
+            return new SurfaceData( normal, this.material, texture);
+        };
+
+        this.interactWithRay = function (rayOrigin, rayDir) 
+        {
+            var a = Math.pow( rayDir[0], 2) + Math.pow( rayDir[2], 2) - Math.pow( rayDir[1], 2);
+            var b = 2 * ( rayOrigin[0] * rayDir[ 0] + rayOrigin[2] * rayDir[ 2] - rayOrigin[ 1] * rayDir[ 1]);
+            var c = Math.pow( rayOrigin[0], 2) + Math.pow( rayOrigin[2], 2) - Math.pow( rayOrigin[1], 2);
+
+            var interactionParams = solveEquation( a, b, c);
+            if ( interactionParams.length === 0) // no intersection, return null!
+            {
+                return null;
+            }
+            else if ( interactionParams.length === 1)
+            {
+                // Find the real hit point with the returned parameter t
+                var hitPoint = interactionParams[ 0];
+                hitPoint = add( rayOrigin, multScalar( rayDir, hitPoint ) );
+                if ( hitPoint[ 3] > 0)
+                {
+                    throw "Hit point error";
+                }
+
+                if ( hitPoint[ 1] < this.center[ 1] || hitPoint[1] > this.center[ 1] + this.height )
+                {
+                    return null;
+                }
+
+                // do not compare points, find normal, distance and other required details.
+                var hitDistance = efficientDistance( rayOrigin, hitPoint);
+                var interactionResult = new InteractionResult( hitPoint, hitDistance);
+                return interactionResult;
+            }
+            else if ( interactionParams.length === 2)
+            {
+                // Find the real hit point with the returned parameter t
+                var hitPoint1 = interactionParams[ 0];
+                var hitPoint2 = interactionParams[ 1];
+
+                hitPoint1 = add( rayOrigin, multScalar( rayDir, hitPoint1 ) );
+                hitPoint2 = add( rayOrigin, multScalar( rayDir, hitPoint2 ) );
+
+                // compare points, find normal, distance and other required details.
+                var distance1 = efficientDistance( rayOrigin, hitPoint1);
+                var distance2 = efficientDistance( rayOrigin, hitPoint2);
+
+                var realHitPoint;
+                var realHitDistance;
+                if ( distance1 > distance2 )
+                {
+                    realHitPoint = hitPoint2;
+                    realHitDistance = distance2;
+                }
+                else 
+                {
+                    realHitPoint = hitPoint1;
+                    realHitDistance = distance1;
+                }
+
+                if ( realHitPoint[ 3] > 0)
+                {
+                    throw "Hit point error";
+                }
+
+                if ( realHitPoint[ 1] < this.center[ 1] || realHitPoint[1] > this.center[ 1] + this.height )
+                {
+                    return null;
+                }
+
+                var interactionResult = new InteractionResult(realHitPoint, realHitDistance);
+                return interactionResult;
+            }
+
+            else {
+                // ERROR
+                throw "Interaction points cannot be more than 2!";
+            }
         };
     }
 };

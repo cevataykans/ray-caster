@@ -14,7 +14,7 @@ class Sphere
         this.type = false;
 
         // other details such as material, color etc.
-        this.color = vec4( 1.0, 1, 1, 1.0);
+        this.color = vec4( 1.0, 0.5, 0.5, 1.0);
         this.material = new Material( MaterialTypes.diffuse, this.color); //TODO: check if naming is correct
 
         this.calculatePoints = function () //TODO: seperate point generation and ray cast logic in two seperate classes contained in sphere?
@@ -154,7 +154,8 @@ class Sphere
 
         this.getShapeSurfaceData = function( hitpoint, rayDir)
         {
-            var normal = normalize( subtract( hitpoint, this.center) );
+            var normal = subtract( hitpoint, this.center);
+            normal = normalize( normal);
 
             var texture = vec2();
             texture[ 0] =  (1 + (Math.atan2( hitpoint[ 2], hitpoint[0] ) / Math.PI) ) * 0.5;

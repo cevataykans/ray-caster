@@ -197,7 +197,7 @@ function RayCaster()
         if ( shapeMaterialType === MaterialTypes.reflection ) //TODO check reflection of the shapeToShadeDetails.materialType
         {
             var reflectionVector = reflectVector( rayDir, hitNormal);
-            normalize( reflectionVector);
+            reflectionVector = normalize( reflectionVector);
             colorToReturn = add( colorToReturn, multScalar( this.traceRay( hitOrigin, reflectionVector, depth - 1, RayType.OTHER ), 0.8 ) );
         }
         else if ( shapeMaterialType === MaterialTypes.refractandreflect ) //TODO if check reflection and rafraction of the shapeToShadeDetails.materialType
@@ -210,7 +210,7 @@ function RayCaster()
             if ( fresnelCofactor < 1) // compute refraction if it is not a total internal reflection
             {
                 var refractDir = refractVector( rayDir, hitNormal, hitIor);
-                normalize( refractDir);
+                refractDir = normalize( refractDir);
                 if ( length( refractDir) <= 0)
                 {
                     throw "NOOOO";
@@ -220,7 +220,7 @@ function RayCaster()
             }
 
             var reflectionDir = reflectVector( rayDir, hitNormal);
-            normalize( reflectionDir);
+            reflectionDir = normalize( reflectionDir);
             var reflectionOrigin = outside ? add( hitPoint, bias) : subtract( hitPoint, bias);
             var reflectionColor = this.traceRay( reflectionOrigin, reflectionDir, depth - 1, RayType.OTHER );
 
@@ -285,7 +285,7 @@ function RayCaster()
     
                 // shade specular
                 var lightReflectDir = reflectVector( lightShaderData.lightDirection, hitNormal);
-                normalize( lightReflectDir);
+                lightReflectDir = normalize( lightReflectDir);
                 tempSpecularColor =  multScalar( lightAmount, Math.pow( Math.max( 0, dot( lightReflectDir, multScalar( rayDir, -1) ) ), hitSpecularN) );
 
                 // send shadow secondary ray!

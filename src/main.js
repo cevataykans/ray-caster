@@ -26,17 +26,20 @@ const plane1 = new Plane(vec3(0, 0, -2), 2);
 var allShapes = [];
 
 var shapes = [ ]; //TALHA IF YOU WANT YOUR SHAPES TO BE RENDERED YOU NEED TO PUT THEM INTO THIS LIST
-shapes.push( new Sphere( vec4( -1.5, 0, 0, 0), 0.5) );
-shapes.push( new Sphere( vec4( 2, 0, 0, 0), 1) );
+shapes.push( new Sphere( vec4( -1.5, 0, 2, 0), 0.5) );
+shapes.push( new Sphere( vec4( 2, 0, -2, 0), 1) );
 var refractiveSphere = new Sphere( vec4( 0, 1, 0, 0), 1);
-refractiveSphere.material = new Material( MaterialTypes.refractandreflect, vec4( 1, 1, 1, 1), 1.3);
+refractiveSphere.material = new Material( MaterialTypes.refractandreflect, vec4( 1, 0, 1, 1), 1.5);
 console.log( "SPHERE MATERIAL");
 console.log( refractiveSphere.material);
-shapes.push( refractiveSphere);
-var pongSphere = new Sphere( vec4( 0, 1, 2, 0), 0.25 );
-pongSphere.material = new Material( MaterialTypes.pong, vec4( 0, 1, 1, 1), null, vec4( 0.18, 0.18, 0.18, 1), vec4( 0.8, 0.8, 0.8, 1), vec4( 0.1, 0.1, 0.1, 1), 1200);
-shapes.push( pongSphere);
+//shapes.push( refractiveSphere);
+var pongSphere = new Sphere( vec4( -1, 1, 2, 0), 0.25 );
+pongSphere.material = new Material( MaterialTypes.pong, vec4( 0, 1, 1, 1), null, vec4( 0.18, 0.18, 0.18, 1), vec4( 0.8, 0.8, 0.8, 1), vec4( 0.8, 0.8, 0.8, 1), 1200);
+//shapes.push( pongSphere);
 //shapes.push( new Sphere( vec4( -1, 0, -2, 0), 0.125) );
+var rayCone = new Cone( vec4( 0, 0, 0, 0), 2, 2);
+rayCone.material = new Material( MaterialTypes.pong, vec4( 0, 1, 1, 1), null, vec4( 0.18, 0.18, 0.18, 1), vec4( 0.8, 0.8, 0.8, 1), vec4( 0.8, 0.8, 0.8, 1), 1200);
+shapes.push( rayCone);
 var square = new Cube( vec4( 0, -6, 0, 0), 10);
 square.addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ), vec4( 0.5, 0.5, -0.5 ) ); // front
 square.addTriangle( vec4( -0.5, 0.5, -0.5 ), vec4( 0.5, 0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ) ); // front complementary
@@ -107,7 +110,7 @@ window.onload = function init() {
     }
     // end experimental
     
-    var ctx = canvas.getContext("experimental-webgl", {preserveDrawingBuffer: true}); // delete if not used
+    //var ctx = canvas.getContext("experimental-webgl", {preserveDrawingBuffer: true}); // delete if not used
     
     gl = WebGLUtils.setupWebGL( canvas );
     if ( !gl ) { alert( "WebGL isn't available" ); }
@@ -184,9 +187,8 @@ window.onload = function init() {
 
     thetaLoc = gl.getUniformLocation(program, "theta");
     
-    viewerPos = vec3(0.0, 0.0, -20.0 );
-
-    projection = ortho(-1, 1, -1, 1, -100, 100);
+    // viewerPos = vec3(0.0, 0.0, -20.0 ); DEPRECIATED
+    // projection = ortho(-1, 1, -1, 1, -100, 100);
     
     ambientProduct = mult(lightAmbient, materialAmbient);
     diffuseProduct = mult(lightDiffuse, materialDiffuse);
@@ -213,8 +215,8 @@ window.onload = function init() {
     gl.uniform1f(gl.getUniformLocation(program, 
        "shininess"),materialShininess);
     
-    gl.uniformMatrix4fv( gl.getUniformLocation(program, "projectionMatrix"),
-       false, flatten(projection));
+    // gl.uniformMatrix4fv( gl.getUniformLocation(program, "projectionMatrix"),
+    //    false, flatten(projection));
 
     // FPS => official tutorial on mozilla tutorial: https://developer.mozilla.org/en-US/docs/Web/API/Pointer_Lock_API
     setupCamera();
