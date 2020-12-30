@@ -1,6 +1,6 @@
 var imageWidth = 512;
 var imageHeight = 512;
-var traceDepth = 5;
+var traceDepth = 10;
 
 var hitCount = 0;
 var camTf;
