@@ -19,13 +19,13 @@ var flag = true;
 var color = new Uint8Array(4);
 
 const skybox = new Cube(vec3(0,0,0), 100);
-const sphere1 = new Sphere(vec4(0,3,0, 0), 1);
-const cone1 = new Cone(vec4(0,0,0,0), 1, 3);
+const sphere1 = new Sphere(vec4(0,1,0, 0), 1);
+const cone1 = new Cone(vec4(0,0,0,0), 3, 3);
 //cone1.material = new Material( MaterialTypes.pong, vec4( 0, 1, 1, 1), null, vec4( 0.18, 0.18, 0.18, 1), vec4( 0.8, 0.8, 0.8, 1), vec4( 0.8, 0.8, 0.8, 1), 1200);
 const cube1 = new Cube(vec4(-3,1,2,0), 3);
 cube1.initializeTriangles();
-const torus1 = new Torus(vec4(-4, 0, 0.5), 0.5, 1);
-const plane1 = new Plane(vec4(0, 0, -2, 0), 2);
+const torus1 = new Torus(vec4(-8, 0, 0.5), 0.5, 1);
+const plane1 = new Plane(vec4(-3, 0, -5, 0), 2);
 // var allShapes = [];
 
 var shapes = [ ]; //TALHA IF YOU WANT YOUR SHAPES TO BE RENDERED YOU NEED TO PUT THEM INTO THIS LIST
@@ -173,6 +173,7 @@ window.onload = function init() {
     gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vPosition);
 
+    skybox.color = vec4(1,1,1,1);
     skybox.calculatePoints();
     sphere1.calculatePoints();
     cone1.calculatePoints();
@@ -218,6 +219,8 @@ window.onload = function init() {
     {
         var raycaster = new RayCaster();
         raycaster.castRays();
+        plane1.raycastImage = raycaster.pixelList;
+        plane1.configureImage();
     };
     
     gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
@@ -306,7 +309,10 @@ var render = function(){
     cube1.render();
     torus1.mapTexture(img);
     torus1.render();    
-    plane1.mapCanvasFromRaycast();
+    if (plane1.raycastImage != null)
+        plane1.mapCanvasFromRaycast(plane1.raycastImage);
+    else
+        plane1.mapTexture();
     plane1.render();
     skybox.mapTexture(skyImg);
     skybox.render();

@@ -88,7 +88,6 @@ function RayCaster()
         console.log( this.pixelList.length);
         console.log( "HIT COUNT");
         console.log( hitCount);    
-        this.debugImage( this.pixelList);
     };
 
     this.buildRay = function( pixelX, pixelY)
@@ -311,31 +310,5 @@ function RayCaster()
 
         colorToReturn[ 3] = 1;
         return colorToReturn;
-    };
-
-    this.debugImage = function()
-    {
-        console.log( "Painting");
-        var debugCanvas = document.getElementById('rayCastCanvas');
-        ctx = debugCanvas.getContext('2d');
-        ctx.clearRect(0, 0, debugCanvas.width, debugCanvas.height);
-        ctx.clearRect(0, 0, imageWidth, imageHeight);
-        var id = ctx.getImageData(0, 0, imageWidth, imageHeight);
-        var pixels = id.data;
-      
-        for ( let row = 0; row < imageHeight; row++)
-        {
-            for ( let col = 0; col < imageWidth; col++)
-            {
-                var listIndex = (row * id.width + col);
-                var off = listIndex * 4;
-                pixels[off] = this.pixelList[listIndex][0] * 255;
-                pixels[off + 1] = this.pixelList[listIndex][1] * 255;
-                pixels[off + 2] = this.pixelList[listIndex][2] * 255;
-                pixels[off + 3] = this.pixelList[listIndex][3] * 255;
-            }
-        }
-        ctx.putImageData(id, 0, 0);
-        console.log( "Painting done");
     };
 };
