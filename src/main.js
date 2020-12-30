@@ -18,6 +18,7 @@ var flag = true;
 
 var color = new Uint8Array(4);
 
+const skybox = new Cube(vec3(0,0,0), 100);
 const sphere1 = new Sphere(vec3(0,3,0), 1);
 const cone1 = new Cone(vec3(0,0,0), 1, 3);
 const cube1 = new Cube(vec3(-3,1,2), 3);
@@ -156,6 +157,7 @@ window.onload = function init() {
     gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vPosition);
 
+    skybox.calculatePoints();
     sphere1.calculatePoints();
     cone1.calculatePoints();
     cube1.calculatePoints();
@@ -164,6 +166,8 @@ window.onload = function init() {
 
     img = document.createElement("img");
     img.src = "Images/Rainbow.jpg";
+    skyImg = document.createElement("img");
+    skyImg.src = "Images/Default.png";
     var imageSrc = document.getElementById("texImageMenu");
     imageSrc.addEventListener('change', function() {
         console.log("yo");
@@ -285,10 +289,11 @@ var render = function(){
     cube1.mapTexture(img);
     cube1.render();
     torus1.mapTexture(img);
-    torus1.render();
-    //plane1.mapTexture(img3);
+    torus1.render();    
     plane1.mapCanvasFromRaycast();
     plane1.render();
+    skybox.mapTexture(skyImg);
+    skybox.render();
 
     // eye = cameraTransform[ "pos"];
     // let lookDirection = getLookDirection( 100, 2);

@@ -142,6 +142,15 @@ function Plane( center = vec3(0, 0, 0), side = 1)
         gl.enableVertexAttribArray(vTexCoord);
     }
 
+    this.rotate = function (angle) {
+        var m = mat4();
+        m = translate(-this.center[0], -this.center[1], -this.center[2]);
+        m = mult(m, rotate(90, [0,1,0]));
+        m = mult (m, translate(this.center[0], this.center[1], this.center[2]));
+        gl.uniformMatrix4fv(gl.getUniformLocation(program,
+            "modelViewMatrix"), false, flatten(m));
+    }
+
 
     this.render = function() {
         var m = mat4();

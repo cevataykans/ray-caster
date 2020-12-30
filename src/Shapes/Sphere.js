@@ -4,7 +4,7 @@ class Sphere
     {
         this.center = center;
         this.radius = radius;
-        this.color = vec4( 1.0, 0.0, 1, 1.0);
+        this.color = vec4( 1.0, 1.0, 1, 1.0);
         this.points = [];
         this.colors = [];
         this.normals = [];
@@ -13,8 +13,6 @@ class Sphere
         this.sectorCount = 50;
         this.type = false;
 
-        // other details such as material, color etc.
-        this.color = vec4( 1.0, 0.5, 0.5, 1.0);
         this.material = new Material( MaterialTypes.diffuse, this.color); //TODO: check if naming is correct
 
         this.calculatePoints = function () //TODO: seperate point generation and ray cast logic in two seperate classes contained in sphere?

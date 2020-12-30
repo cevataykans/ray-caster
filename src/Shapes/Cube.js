@@ -17,7 +17,7 @@ function Cube( center = vec4(0, 0, 0, 0), side = 1)
     ];
 
     // other details such as material, color etc.
-    this.color = vec4( 1.0, 0.0, 0.0, 1.0);
+    this.color = vec4( 1.0, 1.0, 1.0, 1.0);
     this.material = new Material( MaterialTypes.reflection, this.color, 1);
 
     this.calculateVertices = function() {
@@ -152,6 +152,21 @@ function Cube( center = vec4(0, 0, 0, 0), side = 1)
         triangleToAdd.setSurfaceData( this.material); //TODO
         this.triangles.push( triangleToAdd);
     };
+
+    this.initializeTriangles = function() {
+        this.addTriangle( vec4( 0.5, -0.5, -0.5, 0 ), vec4( -0.5, -0.5, -0.5, 0 ), vec4( 0.5, 0.5, -0.5, 0 ) ); // front
+        addTriangle( vec4( -0.5, 0.5, -0.5 ), vec4( 0.5, 0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ) ); // front complementary
+        addTriangle( vec4( 0.5, -0.5, 0.5 ), vec4( -0.5, -0.5, 0.5 ), vec4( 0.5, 0.5, 0.5 ) ); // back
+        addTriangle( vec4( -0.5, 0.5, 0.5 ), vec4( 0.5, 0.5, 0.5 ), vec4( -0.5, -0.5, 0.5 ) ); // back complementary
+        addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ), vec4( 0.5, -0.5, 0.5 ) ); // bottom
+        addTriangle( vec4( -0.5, -0.5, 0.5 ), vec4( 0.5, -0.5, 0.5 ), vec4( -0.5, -0.5, -0.5 )  ); // bottom complementary
+        addTriangle( vec4( 0.5, 0.5, -0.5 ), vec4( -0.5, 0.5, -0.5 ), vec4( 0.5, 0.5, 0.5 ) ); // top
+        addTriangle( vec4( -0.5, 0.5, 0.5 ), vec4( 0.5, 0.5, 0.5 ), vec4( -0.5, 0.5, -0.5 ) ); // top complementary
+        addTriangle( vec4( -0.5, -0.5, -0.5 ), vec4( -0.5, -0.5, 0.5 ), vec4( -0.5, 0.5, -0.5 ) ); // right side
+        addTriangle( vec4( -0.5, 0.5, 0.5 ), vec4( -0.5, 0.5, -0.5 ), vec4( -0.5, -0.5, 0.5 ) ); // right side complementary
+        addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( 0.5, -0.5, 0.5 ), vec4( 0.5, 0.5, -0.5 ) ); // left side
+        addTriangle( vec4( 0.5, 0.5, 0.5 ), vec4( 0.5, 0.5, -0.5 ), vec4( 0.5, -0.5, 0.5 ) ); // left side complementary
+    }
 
     this.getShapeSurfaceData = function( hitpoint, rayDir)
     {
