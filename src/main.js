@@ -25,7 +25,7 @@ const skybox = new Cube(vec3(0,0,0), 100);
 //const cube1 = new Cube(vec4(-3,1,2,0), 3);
 //cube1.initializeTriangles();
 //const torus1 = new Torus(vec4(-4, 0, 0.5), 0.5, 1);
-//const plane1 = new Plane(vec4(0, 0, -2, 0), 2);
+const plane1 = new Plane(vec4(-2, 0, -2, 0), 2);
 // var allShapes = [];
 
 var shapes = [ ]; //TALHA IF YOU WANT YOUR SHAPES TO BE RENDERED YOU NEED TO PUT THEM INTO THIS LIST
@@ -33,10 +33,12 @@ var shapes = [ ]; //TALHA IF YOU WANT YOUR SHAPES TO BE RENDERED YOU NEED TO PUT
 // shapes.push( cone1);
 // shapes.push( cube1);
 
-
-shapes.push( new Sphere( vec4( -1.5, 0, 2, 0), 0.5) );
-shapes.push( new Sphere( vec4( 2, 0, -2, 0), 1) );
-shapes.push( new Sphere( vec4( -1, 0, -2, 0), 0.5) );
+var sphere1 = new Sphere( vec4( -1.5, 0, 2, 0), 0.5);
+var sphere2 = new Sphere( vec4( 2, 0, -2, 0), 1);
+var sphere3 = new Sphere( vec4( -1, 0, -2, 0), 0.5);
+shapes.push( sphere1 );
+shapes.push( sphere2 );
+shapes.push( sphere3 );
 var refractiveSphere = new Sphere( vec4( 0, 1, 0, 0), 1);
 refractiveSphere.material = new Material( MaterialTypes.refractandreflect, vec4( 1, 0, 1, 1), 1.5);
 console.log( "SPHERE MATERIAL");
@@ -176,11 +178,18 @@ window.onload = function init() {
 
     skybox.color = vec4(1,1,1,1);
     skybox.calculatePoints();
+    // sphere1.calculatePoints();
+    // cone1.calculatePoints();
+    // cube1.calculatePoints();
+    // torus1.calculatePoints();
+     plane1.calculatePoints();
     sphere1.calculatePoints();
-    cone1.calculatePoints();
-    cube1.calculatePoints();
-    torus1.calculatePoints();
-    plane1.calculatePoints();
+    sphere2.calculatePoints();
+    sphere3.calculatePoints();
+    pongSphere.calculatePoints();
+    rayCone.calculatePoints();
+    square.calculatePoints();
+    pongSquare.calculatePoints();
 
     img = document.createElement("img");
     img.src = "Images/Rainbow.jpg";
@@ -302,19 +311,33 @@ img3.src = "Images/Logo.gif";
 var render = function(){
     gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);  
 
-    sphere1.mapTexture(img);
-    sphere1.render();
-    cone1.mapTexture(img);
-    cone1.render();
-    cube1.mapTexture(img);
-    cube1.render();
-    torus1.mapTexture(img);
-    torus1.render();    
+    // sphere1.mapTexture(img);
+    // sphere1.render();
+    // cone1.mapTexture(img);
+    // cone1.render();
+    // cube1.mapTexture(img);
+    // cube1.render();
+    // torus1.mapTexture(img);
+    // torus1.render();    
     if (plane1.raycastImage != null)
         plane1.mapCanvasFromRaycast(plane1.raycastImage);
     else
         plane1.mapTexture();
     plane1.render();
+    sphere1.mapTexture(img);
+    sphere1.render();
+    sphere2.mapTexture(img);
+    sphere2.render();
+    sphere3.mapTexture(img);
+    sphere3.render();
+    pongSphere.mapTexture(img);
+    pongSphere.render();
+    rayCone.mapTexture(img);
+    rayCone.render();
+    square.mapTexture(img);
+    square.render();
+    pongSquare.mapTexture(img);
+    pongSquare.render();
     skybox.mapTexture(skyImg);
     skybox.render();
 

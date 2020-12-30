@@ -32,3 +32,7 @@ Our camera can only move forward, back, left or right. You cannot change camera 
 BONUSES:
 
 WE DO NOT HAVE ANY BONUSES (such as bump mapping or transparent objects). In the code you can see a fourth type of material called refraction and reflection. We attempted to implement a transparent object but we failed. We have a toloid as a shape in the physical world. However, toloid is not supported by the ray caster as the intersection is a quadratic equation and due to time constraints, we could not find the time to implement ray cast support. 
+
+ANY PROBLEMS WITH RAYCAST OR TEXTURE MAPPING
+
+you can contact t.sen@ug.bilkent.edu.tr and aykan.sevinc@ug.bilkent.edu.tr with any issues.
