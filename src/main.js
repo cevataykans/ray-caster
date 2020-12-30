@@ -19,14 +19,21 @@ var flag = true;
 var color = new Uint8Array(4);
 
 const skybox = new Cube(vec3(0,0,0), 100);
-const sphere1 = new Sphere(vec3(0,3,0), 1);
-const cone1 = new Cone(vec3(0,0,0), 1, 3);
-const cube1 = new Cube(vec3(-3,1,2), 3);
-const torus1 = new Torus(vec3(-4, 0, 0.5), 0.5, 1);
-const plane1 = new Plane(vec3(0, 0, -2), 2);
-var allShapes = [];
+const sphere1 = new Sphere(vec4(0,3,0, 0), 1);
+const cone1 = new Cone(vec4(0,0,0,0), 1, 3);
+//cone1.material = new Material( MaterialTypes.pong, vec4( 0, 1, 1, 1), null, vec4( 0.18, 0.18, 0.18, 1), vec4( 0.8, 0.8, 0.8, 1), vec4( 0.8, 0.8, 0.8, 1), 1200);
+const cube1 = new Cube(vec4(-3,1,2,0), 3);
+cube1.initializeTriangles();
+const torus1 = new Torus(vec4(-4, 0, 0.5), 0.5, 1);
+const plane1 = new Plane(vec4(0, 0, -2, 0), 2);
+// var allShapes = [];
 
 var shapes = [ ]; //TALHA IF YOU WANT YOUR SHAPES TO BE RENDERED YOU NEED TO PUT THEM INTO THIS LIST
+shapes.push( sphere1);
+shapes.push( cone1);
+shapes.push( cube1);
+
+/*
 shapes.push( new Sphere( vec4( -1.5, 0, 2, 0), 0.5) );
 shapes.push( new Sphere( vec4( 2, 0, -2, 0), 1) );
 var refractiveSphere = new Sphere( vec4( 0, 1, 0, 0), 1);
@@ -36,26 +43,35 @@ console.log( refractiveSphere.material);
 //shapes.push( refractiveSphere);
 var pongSphere = new Sphere( vec4( -1, 1, 2, 0), 0.25 );
 pongSphere.material = new Material( MaterialTypes.pong, vec4( 0, 1, 1, 1), null, vec4( 0.18, 0.18, 0.18, 1), vec4( 0.8, 0.8, 0.8, 1), vec4( 0.8, 0.8, 0.8, 1), 1200);
+*/
 //shapes.push( pongSphere);
 //shapes.push( new Sphere( vec4( -1, 0, -2, 0), 0.125) );
+/*
 var rayCone = new Cone( vec4( 0, 0, 0, 0), 2, 2);
 rayCone.material = new Material( MaterialTypes.pong, vec4( 0, 1, 1, 1), null, vec4( 0.18, 0.18, 0.18, 1), vec4( 0.8, 0.8, 0.8, 1), vec4( 0.8, 0.8, 0.8, 1), 1200);
 shapes.push( rayCone);
 var square = new Cube( vec4( 0, -6, 0, 0), 10);
-square.addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ), vec4( 0.5, 0.5, -0.5 ) ); // front
-square.addTriangle( vec4( -0.5, 0.5, -0.5 ), vec4( 0.5, 0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ) ); // front complementary
-square.addTriangle( vec4( 0.5, -0.5, 0.5 ), vec4( -0.5, -0.5, 0.5 ), vec4( 0.5, 0.5, 0.5 ) ); // back
-square.addTriangle( vec4( -0.5, 0.5, 0.5 ), vec4( 0.5, 0.5, 0.5 ), vec4( -0.5, -0.5, 0.5 ) ); // back complementary
-square.addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ), vec4( 0.5, -0.5, 0.5 ) ); // bottom
-square.addTriangle( vec4( -0.5, -0.5, 0.5 ), vec4( 0.5, -0.5, 0.5 ), vec4( -0.5, -0.5, -0.5 )  ); // bottom complementary
-square.addTriangle( vec4( 0.5, 0.5, -0.5 ), vec4( -0.5, 0.5, -0.5 ), vec4( 0.5, 0.5, 0.5 ) ); // top
-square.addTriangle( vec4( -0.5, 0.5, 0.5 ), vec4( 0.5, 0.5, 0.5 ), vec4( -0.5, 0.5, -0.5 ) ); // top complementary
-square.addTriangle( vec4( -0.5, -0.5, -0.5 ), vec4( -0.5, -0.5, 0.5 ), vec4( -0.5, 0.5, -0.5 ) ); // right side
-square.addTriangle( vec4( -0.5, 0.5, 0.5 ), vec4( -0.5, 0.5, -0.5 ), vec4( -0.5, -0.5, 0.5 ) ); // right side complementary
-square.addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( 0.5, -0.5, 0.5 ), vec4( 0.5, 0.5, -0.5 ) ); // left side
-square.addTriangle( vec4( 0.5, 0.5, 0.5 ), vec4( 0.5, 0.5, -0.5 ), vec4( 0.5, -0.5, 0.5 ) ); // left side complementary
+square.initializeTriangles();
+*/
+// square.addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ), vec4( 0.5, 0.5, -0.5 ) ); // front
+// square.addTriangle( vec4( -0.5, 0.5, -0.5 ), vec4( 0.5, 0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ) ); // front complementary
+// square.addTriangle( vec4( 0.5, -0.5, 0.5 ), vec4( -0.5, -0.5, 0.5 ), vec4( 0.5, 0.5, 0.5 ) ); // back
+// square.addTriangle( vec4( -0.5, 0.5, 0.5 ), vec4( 0.5, 0.5, 0.5 ), vec4( -0.5, -0.5, 0.5 ) ); // back complementary
+// square.addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( -0.5, -0.5, -0.5 ), vec4( 0.5, -0.5, 0.5 ) ); // bottom
+// square.addTriangle( vec4( -0.5, -0.5, 0.5 ), vec4( 0.5, -0.5, 0.5 ), vec4( -0.5, -0.5, -0.5 )  ); // bottom complementary
+// square.addTriangle( vec4( 0.5, 0.5, -0.5 ), vec4( -0.5, 0.5, -0.5 ), vec4( 0.5, 0.5, 0.5 ) ); // top
+// square.addTriangle( vec4( -0.5, 0.5, 0.5 ), vec4( 0.5, 0.5, 0.5 ), vec4( -0.5, 0.5, -0.5 ) ); // top complementary
+// square.addTriangle( vec4( -0.5, -0.5, -0.5 ), vec4( -0.5, -0.5, 0.5 ), vec4( -0.5, 0.5, -0.5 ) ); // right side
+// square.addTriangle( vec4( -0.5, 0.5, 0.5 ), vec4( -0.5, 0.5, -0.5 ), vec4( -0.5, -0.5, 0.5 ) ); // right side complementary
+// square.addTriangle( vec4( 0.5, -0.5, -0.5 ), vec4( 0.5, -0.5, 0.5 ), vec4( 0.5, 0.5, -0.5 ) ); // left side
+// square.addTriangle( vec4( 0.5, 0.5, 0.5 ), vec4( 0.5, 0.5, -0.5 ), vec4( 0.5, -0.5, 0.5 ) ); // left side complementary
+/*
 shapes.push( square); // TODO: REFACTOR NEED UI TO MANIPULATE SHAPES AND DYNAMIC SHAPE CREATION AND SHAPRE MATERIAL MANIPULATION
-
+var pongSquare = new Cube( vec4( 0, 0, 0, 0), 1);
+pongSquare.material = new Material( MaterialTypes.pong, vec4( 0.2, 0.5, 1, 1), null, vec4( 0.18, 0.18, 0.18, 1), vec4( 0.8, 0.8, 0.8, 1), vec4( 0.8, 0.8, 0.8, 1), 800);
+pongSquare.initializeTriangles();
+shapes.push( pongSquare);
+*/
 // //var sceneLight = new DistantLight( 1, vec4(1, 0, 0, 0));
 // var sceneLight = new PointLight( 100, vec4( 0, 0, -1, 0));
 // console.log( "SCENE LIGHT");

@@ -4,7 +4,7 @@ class Sphere
     {
         this.center = center;
         this.radius = radius;
-        this.color = vec4( 1.0, 1.0, 1, 1.0);
+        this.color = vec4( 1.0, 0.0, 1, 1.0);
         this.points = [];
         this.colors = [];
         this.normals = [];

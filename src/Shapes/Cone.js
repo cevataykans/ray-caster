@@ -11,6 +11,7 @@ class Cone {
 
         // other details such as material, color etc.
         this.color = vec4(1, 1, 1, 1.0);
+        this.material = new Material( MaterialTypes.reflection, this.color, 1);
 
         this.calculatePoints = function () {
             var cyclinderPointIndices = [];
