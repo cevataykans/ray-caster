@@ -1,33 +1,22 @@
-class Sphere {
-    constructor(center = vec3(0, 0, 0), radius = 1) {
+class Sphere 
+{
+    constructor(center = vec4(0, 0, 0, 0), radius = 1) 
+    {
         this.center = center;
         this.radius = radius;
+        this.color = vec4( 1.0, 0.0, 1, 1.0);
         this.points = [];
         this.colors = [];
         this.normals = [];
-        this.stackCount = 20;
-        this.sectorCount = 20;
+        this.texPoints = [];
+        this.stackCount = 50;
+        this.sectorCount = 50;
+        this.type = false;
 
-        // other details such as material, color etc.
-        this.color = vec4( 1.0, 0.5, 0.5, 1.0);
+        this.material = new Material( MaterialTypes.diffuse, this.color); //TODO: check if naming is correct
 
-        this.getShapeSurfaceData = function( hitpoint, rayDir)
+        this.calculatePoints = function () //TODO: seperate point generation and ray cast logic in two seperate classes contained in sphere?
         {
-            var normal = normalize( subtract( hitpoint, this.center) );
-            var colorToReturn = [];
-            for ( let i = 0; i < 3; i++)
-            {
-                colorToReturn.push( this.color[ i] * Math.max( 0, dot( normal, multScalar( rayDir, -1) )) );
-            }
-            colorToReturn.push( 1);
-           
-            var texture = vec2();
-            texture[ 0] =  (1 + (Math.atan2( hitpoint[ 2], hitpoint[0] ) / Math.PI) ) * 0.5;
-            texture[ 1] = Math.acos( hitpoint[ 1]) / Math.PI;
-            return new SurfaceData( normal, colorToReturn, texture);
-        };
-
-        this.calculatePoints = function () {
             var spherePointIndices = [];
 
             var x, y, z, xyAngle;
@@ -78,6 +67,10 @@ class Sphere {
                         this.colors.push(this.color);
                         this.colors.push(this.color);
                         this.colors.push(this.color);
+
+                        this.texPoints.push(i/this.stackCount, j/this.sectorCount);
+                        this.texPoints.push(i/this.stackCount, j/this.sectorCount);
+                        this.texPoints.push(i/this.stackCount, j/this.sectorCount);
                     }
 
                     if (i != (this.stackCount - 1)) {
@@ -99,14 +92,40 @@ class Sphere {
                         this.colors.push(this.color);
                         this.colors.push(this.color);
                         this.colors.push(this.color);
+                            
+                        this.texPoints.push(i/this.stackCount, j/this.sectorCount);
+                        this.texPoints.push(i/this.stackCount, j/this.sectorCount);
+                        this.texPoints.push(i/this.stackCount, j/this.sectorCount);
                     }
                 }
             }
         };
 
-        this.render = function () {
-            this.calculatePoints();
+        this.mapTexture = function (image = null)
+        {
+            let texture;
+            if (image == null)
+                texture = configureTextureNoImage(image2);
+            else
+                texture = configureTextureImage(image);
+                
+            framebuffer = gl.createFramebuffer();
+            gl.bindFramebuffer( gl.FRAMEBUFFER, framebuffer);
 
+            gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+    
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+            var tBuffer = gl.createBuffer();
+            gl.bindBuffer( gl.ARRAY_BUFFER, tBuffer);
+            gl.bufferData( gl.ARRAY_BUFFER, flatten(this.texPoints), gl.STATIC_DRAW );
+            var vTexCoord = gl.getAttribLocation( program, "vTexCoord");
+            gl.vertexAttribPointer(vTexCoord, 2, gl.FLOAT, false, 0, 0);
+            gl.enableVertexAttribArray(vTexCoord);
+        }
+
+        this.render = function () 
+        {
             var m = mat4();
             m = translate(this.center[0], this.center[1], this.center[2]);
             gl.uniformMatrix4fv(gl.getUniformLocation(program,
@@ -131,17 +150,25 @@ class Sphere {
             gl.drawArrays(gl.TRIANGLES, 0, this.points.length);
         };
 
-        this.interactWithRay = function (rayOrigin, rayDir) {
-            //var a = dot( rayDir, rayDir);
+        this.getShapeSurfaceData = function( hitpoint, rayDir)
+        {
+            var normal = subtract( hitpoint, this.center);
+            normal = normalize( normal);
+
+            var texture = vec2();
+            texture[ 0] =  (1 + (Math.atan2( hitpoint[ 2], hitpoint[0] ) / Math.PI) ) * 0.5;
+            texture[ 1] = Math.acos( hitpoint[ 1]) / Math.PI;
+            return new SurfaceData( normal, this.material, texture);
+        };
+
+        this.interactWithRay = function (rayOrigin, rayDir) 
+        {
             var a = 1;
-            //var b = 2 * dot( rayDir, rayOrigin);
             var OMinusC = subtract( rayOrigin, this.center);
             var b = 2 * dot( rayDir, OMinusC);
-            //var c = dot( rayOrigin, rayOrigin) -  Math.pow( this.radius, 2);
             var c = dot( OMinusC, OMinusC ) - Math.pow( this.radius, 2);
 
             var interactionParams = solveEquation( a, b, c);
-            // add distance other information etc.
             if ( interactionParams.length === 0) // no intersection, return null!
             {
                 return null;
@@ -151,6 +178,10 @@ class Sphere {
                 // Find the real hit point with the returned parameter t
                 var hitPoint = interactionParams[ 0];
                 hitPoint = add( rayOrigin, multScalar( rayDir, hitPoint ) );
+                if ( hitPoint[ 3] > 0)
+                {
+                    throw "Hit point error";
+                }
 
                 // do not compare points, find normal, distance and other required details.
                 var hitDistance = efficientDistance( rayOrigin, hitPoint);
@@ -184,6 +215,10 @@ class Sphere {
                 }
                 var realHitNormal = normalize(subtract(realHitPoint, this.center));
                 var hitColor = this.color;
+                if ( realHitPoint[ 3] > 0)
+                {
+                    throw "Hit point error";
+                }
 
                 var interactionResult = new InteractionResult(realHitPoint, realHitDistance, realHitNormal, hitColor);
                 return interactionResult;

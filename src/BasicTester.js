@@ -25,8 +25,8 @@ function executeTests()
     console.log( "TRIANGLE AC: " + triangle.edgeAC);
     console.log( "TRIANGLE LENGTH/AREA: " + triangle.triCompleteArea);
     console.log( "TRIANGLE NORMAL: " + triangle.normal);
-    rayOrigin = new vec4( 10, 0, 0);
-    rayDir = new vec4( -1, 0, 0);
+    rayOrigin = new vec4( 10, 0, 0, 0);
+    rayDir = new vec4( -1, 0, 0, 0);
     var intersection = triangle.interactWithRay( rayOrigin, rayDir);
     if ( intersection != null)
     {
@@ -39,4 +39,21 @@ function executeTests()
         console.log( "NO INTERSECTION");
     }
     console.log( "TRIANGLE TEST END");
+    console.log( "LIGHT TEST");
+    var testMAtireal = new Material();
+    // var lightShadeData = sceneLight.getLightShadingData( )
+    // console.log( multScalar( mult( multScalar( testMAtireal.albedo, 1.0 / Math.PI), sceneLight.lightAmount), Math.max( 0, dot( vec4( 1, 0, 0, 0), multScalar( rayDir, -1) ) ) ) );
+    var pLight = new PointLight( 1, vec4( 0, 0, 0, 0));
+    console.log( pLight.getLightShadingData( vec4( 1, 0, 0, 0)) );
+    var dLight = new DistantLight( 1, vec4( 1, 0, 0, 0 ));
+    console.log( dLight.getLightShadingData( vec4( 1, 0, 0, 0)) );
+    console.log( "LIGHT TEST END");
+    console.log( "REFLECT TEST");
+    var reflection = reflectVector( vec4( 5, 0, 0, 0), vec4( -1, 0, 0, 0));
+    console.log( reflection);
+    reflection = reflectVector( vec4( 1, 1, 0, 0), vec4( 0, 1, 0, 0));
+    console.log( reflection);
+    reflection = reflectVector( vec4( -1, 1, 0, 0), vec4( 1, 0, 0, 0));
+    console.log( reflection);
+    console.log( "REFLECT TEST END");
 };

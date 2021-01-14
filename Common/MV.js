@@ -317,7 +317,7 @@ function mult( u, v )
 
 function multMV( u, v)
 {
-    var result = new vec4();
+    var result = vec4(0, 0, 0, 0);
 
     for ( let i = 0; i < u.length; i++)
     {
@@ -339,7 +339,7 @@ function multMV( u, v)
 
 function multScalar( u, num)
 {
-    var result = vec4();
+    var result = vec4(0, 0, 0, 0);
     for ( let i = 0; i < u.length; i++)
     {
         result[ i] = u[ i] * num;

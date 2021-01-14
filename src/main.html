@@ -9,15 +9,19 @@
 <script type="text/javascript" src="../Common/MV.js"></script>
 
 <script type="text/javascript" src="HelperFunctions.js"></script>
+<script type="text/javascript" src="Shapes/Plane.js"></script>
+<script type="text/javascript" src="Shapes/Torus.js"></script>
 <script type="text/javascript" src="Shapes/Cone.js"></script>
 <script type="text/javascript" src="Shapes/Sphere.js"></script>
-<script type="text/javascript" src="Shapes/Square.js"></script>
+<script type="text/javascript" src="Shapes/Cube.js"></script>
 <script type="text/javascript" src="Shapes/Triangle.js"></script>
+<script type="text/javascript" src="Light.js"></script>
 <script type="text/javascript" src="camera.js"></script>
-<script type="text/javascript" src="pickCube3.js"></script>
+<script type="text/javascript" src="main.js"></script>
 <script type="text/javascript" src="RayCaster.js"></script>
 <script type="text/javascript" src="BasicTester.js"></script>
 <script type="text/javascript" src="TextureMapper.js"></script>
+<script type="text/javascript" src="Skybox.js"></script>
 
 <script id="vertex-shader" type="x-shader/x-vertex">
 
@@ -99,30 +103,21 @@ main()
 
 <body>
 <div>
-<canvas id="gl-canvas" width="512" height="512">
+<canvas style="border:2px groove yellow; position: absolute; left: 30%; top: 5%;" id="gl-canvas" width="512" height="512">
 Oops ... your browser doesn't support the HTML5 canvas element
 </canvas>
-<canvas id="rayCastCanvas" width="512" height="512">
-    Oops ... your browser doesn't support the HTML5 canvas element
-</canvas>
 </div>
-<div>
+<div style="border:2px groove red; position: absolute; left: 30%; top: 65%; display: inline; padding: 10px; background-color: rgba(255, 0, 0, 0.137);">
+    Shape Texture Image: 
     <select id="texImageMenu">
         <option value="Default">Default</option>
         <option value="1080x1080">1080x1080</option>
         <option value="Logo">Logo</option>
-        <option value="Rainbow">Rainbow</option>
+        <option value="Rainbow" selected>Rainbow</option>
         <option value="No Image">No Image</option>
     </select>
 </div>
-<button id = "ButtonX">Rotate X</button>
-<button id = "ButtonY">Rotate Y</button>
-<button id = "ButtonZ">Rotate Z</button>
-<button id = "ButtonT">Toggle Rotation</button>
-<button id = "raycastButton">Cast Rays</button>
-</div>
-<div id = "test">
-face
+<button style="border:2px groove darkblue; position: absolute; left: 52%; top: 65%; display: inline; padding: 10px;" class="btn btn-primary" id = "raycastButton">Cast Rays</button>
 </div>
 </body>
 </html>

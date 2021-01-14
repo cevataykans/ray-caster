@@ -2,20 +2,13 @@ var texSize = 64;
 
 var texCoordsArray = [];
 
-var texCoord = [
-    vec2(0, 0),
-    vec2(0, 1),
-    vec2(1, 1),
-    vec2(1, 0)
-];
-
 var image1 = new Array()
     for (var i =0; i<texSize; i++)  image1[i] = new Array();
     for (var i =0; i<texSize; i++) 
         for ( var j = 0; j < texSize; j++) 
            image1[i][j] = new Float32Array(4);
     for (var i =0; i<texSize; i++) for (var j=0; j<texSize; j++) {
-        var c = (((i & 0x8) == 0) ^ ((j & 0x8)  == 0));
+        var c = (((i & 0x4) == 0) ^ ((j & 0x4)  == 0));
         image1[i][j] = [c, c, c, 1];
     }
 
@@ -37,8 +30,10 @@ function configureTextureNoImage(image) {
         gl.RGBA, gl.UNSIGNED_BYTE, image);
     gl.generateMipmap( gl.TEXTURE_2D );
     gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, 
-        gl.NEAREST_MIPMAP_LINEAR );
-    gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST );
+        gl.LINEAR_MIPMAP_NEAREST  );
+    gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR );
+
+    return texture;
 }
 
 function configureTextureImage( image ) {
@@ -53,4 +48,5 @@ function configureTextureImage( image ) {
     gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST );
     
     gl.uniform1i(gl.getUniformLocation(program, "texture"), 0);
+    return texture;
 }

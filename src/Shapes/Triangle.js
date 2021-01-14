@@ -3,7 +3,7 @@ function Triangle( firstPoint, secPoint, thirdPoint)
     this.firstPoint = firstPoint;
     this.secPoint = secPoint; // make this center! so that triangle faces outwards
     this.thirdPoint = thirdPoint;
-
+    this.type = true;
     this.edgeAB = subtract( secPoint, firstPoint); // u is associated with B
     this.edgeAC = subtract( thirdPoint, firstPoint); // v is associated with C
     this.edgeBC = subtract( thirdPoint, secPoint);
@@ -22,10 +22,11 @@ function Triangle( firstPoint, secPoint, thirdPoint)
     this.ranColor3 = vec4(Math.random(), Math.random(), Math.random(), 1);
     this.u;
     this.v;
+    this.material;
 
-    this.setSurfaceData = function( colorToSet) //TODO 
+    this.setSurfaceData = function( materialOfParent) //TODO 
     {
-        this.color = colorToSet;
+        this.material = materialOfParent;
     };
 
     this.getShapeSurfaceData = function( hitpoint, rayDir) //TODO
@@ -37,7 +38,7 @@ function Triangle( firstPoint, secPoint, thirdPoint)
         var randColor = add( this.ranColor1, add( this.ranColor3, this.ranColor2));
         randColor[ 3] = 1;
 
-        return new SurfaceData( this.normal, randColor, null);
+        return new SurfaceData( this.normal, this.material, null);
     };
 
     this.interactWithRay = function ( rayOrigin, rayDir)
@@ -62,7 +63,7 @@ function Triangle( firstPoint, secPoint, thirdPoint)
         // console.log( "DOT NORMAL RAY ORIGIN = " + dot( this.normal, rayOrigin));
         // console.log( "D = " + this.D);
         // console.log( "TRI NORMAL = " + this.normal);
-        var pointParam = ( -dot( this.normal, rayOrigin) + this.D) / parallelFlag;
+        var pointParam = ( -1 * dot( this.normal, rayOrigin) + this.D) / parallelFlag;
         //console.log( "POINT PARAM = " + pointParam);
         if ( pointParam < 0)
         {
@@ -72,7 +73,15 @@ function Triangle( firstPoint, secPoint, thirdPoint)
 
         // real hit point
         var hitPoint = add( rayOrigin, multScalar( rayDir, pointParam ) );
-        hitPoint = vec4( hitPoint[0], hitPoint[ 1], hitPoint[ 2]);
+        if ( hitPoint[ 3] > 0)
+        {
+            console.log( ( -1 * dot( this.normal, rayOrigin) + this.D) / parallelFlag );
+            console.log( rayDir);
+            console.log( multScalar( rayDir, pointParam ) );
+            console.log ( add( rayOrigin, multScalar( rayDir, pointParam ) ) );
+            throw "TRIANGLE HIT POINT INVALID";
+        }
+        //hitPoint = vec4( hitPoint[0], hitPoint[ 1], hitPoint[ 2]);
         var insideOutNormal;
 
         // for first edge
