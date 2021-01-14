@@ -176,45 +176,37 @@ window.onload = function init() {
     gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vPosition);
 
-    skybox.color = vec4(1,1,1,1);
-    skybox.calculatePoints();
+    // skybox.calculatePoints();
     // sphere1.calculatePoints();
     // cone1.calculatePoints();
     // cube1.calculatePoints();
     // torus1.calculatePoints();
-     plane1.calculatePoints();
-    sphere1.calculatePoints();
-    sphere2.calculatePoints();
-    sphere3.calculatePoints();
-    pongSphere.calculatePoints();
-    rayCone.calculatePoints();
-    square.calculatePoints();
-    pongSquare.calculatePoints();
+    // plane1.calculatePoints();
 
-    img = document.createElement("img");
-    img.src = "Images/Rainbow.jpg";
-    skyImg = document.createElement("img");
-    skyImg.src = "Images/Default.png";
-    var imageSrc = document.getElementById("texImageMenu");
-    imageSrc.addEventListener('change', function() {
-        console.log("yo");
-        let selection = imageSrc.value;
-        switch(selection)
-        {
-            case "Default":
-                img.src = "Images/Default.png";
-                break;
-            case "1080x1080":
-                img.src = "Images/1080x1080.jpg";
-                break;
-            case "Logo":
-                img.src = "Images/Logo.gif";
-                break;
-            case "Rainbow":
-                img.src = "Images/Rainbow.jpg";
-                break;
-        }       
-    });
+    // img = document.createElement("img");
+    // img.src = "Images/Rainbow.jpg";
+    // skyImg = document.createElement("img");
+    // skyImg.src = "Images/Default.png";
+    // var imageSrc = document.getElementById("texImageMenu");
+    // imageSrc.addEventListener('change', function() {
+    //     console.log("yo");
+    //     let selection = imageSrc.value;
+    //     switch(selection)
+    //     {
+    //         case "Default":
+    //             img.src = "Images/Default.png";
+    //             break;
+    //         case "1080x1080":
+    //             img.src = "Images/1080x1080.jpg";
+    //             break;
+    //         case "Logo":
+    //             img.src = "Images/Logo.gif";
+    //             break;
+    //         case "Rainbow":
+    //             img.src = "Images/Rainbow.jpg";
+    //             break;
+    //     }       
+    // });
 
     thetaLoc = gl.getUniformLocation(program, "theta");
     
@@ -268,44 +260,44 @@ window.onload = function init() {
     document.addEventListener('mozpointerlockchange', lockChangeAlert, false); 
     // END FPS
 
-    canvas.addEventListener("mousedown", function(event){
+    // canvas.addEventListener("mousedown", function(event){
         
-        gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
-        gl.clear( gl.COLOR_BUFFER_BIT);
-        gl.uniform3fv(thetaLoc, theta);
-        for(var i=0; i<6; i++) {
-            gl.uniform1i(gl.getUniformLocation(program, "i"), i+1);
-            gl.drawArrays( gl.TRIANGLES, 6*i, 6 );
-        }
-        var x = event.clientX;
-        var y = canvas.height -event.clientY;
+    //     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+    //     gl.clear( gl.COLOR_BUFFER_BIT);
+    //     gl.uniform3fv(thetaLoc, theta);
+    //     for(var i=0; i<6; i++) {
+    //         gl.uniform1i(gl.getUniformLocation(program, "i"), i+1);
+    //         gl.drawArrays( gl.TRIANGLES, 6*i, 6 );
+    //     }
+    //     var x = event.clientX;
+    //     var y = canvas.height -event.clientY;
           
-        gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, color);
+    //     gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, color);
 
-        if(color[0]==255)
-        if(color[1]==255) elt.innerHTML = "<div> cyan </div>";
-        else if(color[2]==255) elt.innerHTML = "<div> magenta </div>";
-        else elt.innerHTML = "<div> red </div>";
-        else if(color[1]==255)
-        if(color[2]==255) elt.innerHTML = "<div> blue </div>";
-        else elt.innerHTML = "<div> yellow </div>";
-        else if(color[2]==255) elt.innerHTML = "<div> green </div>";
-        else elt.innerHTML = "<div> background </div>";
+    //     if(color[0]==255)
+    //     if(color[1]==255) elt.innerHTML = "<div> cyan </div>";
+    //     else if(color[2]==255) elt.innerHTML = "<div> magenta </div>";
+    //     else elt.innerHTML = "<div> red </div>";
+    //     else if(color[1]==255)
+    //     if(color[2]==255) elt.innerHTML = "<div> blue </div>";
+    //     else elt.innerHTML = "<div> yellow </div>";
+    //     else if(color[2]==255) elt.innerHTML = "<div> green </div>";
+    //     else elt.innerHTML = "<div> background </div>";
         
-        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    //     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
-        gl.uniform1i(gl.getUniformLocation(program, "i"), 0);
-        gl.clear( gl.COLOR_BUFFER_BIT );
-        gl.uniform3fv(thetaLoc, theta);
-        gl.drawArrays(gl.TRIANGLES, 0, 36);
+    //     gl.uniform1i(gl.getUniformLocation(program, "i"), 0);
+    //     gl.clear( gl.COLOR_BUFFER_BIT );
+    //     gl.uniform3fv(thetaLoc, theta);
+    //     gl.drawArrays(gl.TRIANGLES, 0, 36);
 
-    }); 
+    // }); 
     executeTests();
     render();
 }
 
-var img3 = document.createElement("img");
-img3.src = "Images/Logo.gif";
+// var img3 = document.createElement("img");
+// img3.src = "Images/Logo.gif";
 
 
 var render = function(){
@@ -319,27 +311,10 @@ var render = function(){
     // cube1.render();
     // torus1.mapTexture(img);
     // torus1.render();    
-    if (plane1.raycastImage != null)
-        plane1.mapCanvasFromRaycast(plane1.raycastImage);
-    else
-        plane1.mapTexture();
-    plane1.render();
-    sphere1.mapTexture(img);
-    sphere1.render();
-    sphere2.mapTexture(img);
-    sphere2.render();
-    sphere3.mapTexture(img);
-    sphere3.render();
-    pongSphere.mapTexture(img);
-    pongSphere.render();
-    rayCone.mapTexture(img);
-    rayCone.render();
-    square.mapTexture(img);
-    square.render();
-    pongSquare.mapTexture(img);
-    pongSquare.render();
-    skybox.mapTexture(skyImg);
-    skybox.render();
+    // plane1.mapCanvasFromRaycast();
+    // plane1.render();
+    // skybox.mapTexture(skyImg);
+    // skybox.render();
 
     // eye = cameraTransform[ "pos"];
     // let lookDirection = getLookDirection( 100, 2);

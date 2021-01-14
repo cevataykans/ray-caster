@@ -147,7 +147,7 @@ class Cone {
             // put point on gradient
 
             // return and hope it works
-            return new SurfaceData( normal, this.material, texture);
+            return new SurfaceData( normal, this.material, null);
         };
 
         this.interactWithRay = function (rayOrigin, rayDir) 
