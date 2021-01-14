@@ -25,7 +25,7 @@ const skybox = new Cube(vec3(0,0,0), 100);
 //const cube1 = new Cube(vec4(-3,1,2,0), 3);
 //cube1.initializeTriangles();
 //const torus1 = new Torus(vec4(-4, 0, 0.5), 0.5, 1);
-//const plane1 = new Plane(vec4(0, 0, -2, 0), 2);
+const plane1 = new Plane(vec4(-2, 0, -2, 0), 2);
 // var allShapes = [];
 
 var shapes = [ ]; //TALHA IF YOU WANT YOUR SHAPES TO BE RENDERED YOU NEED TO PUT THEM INTO THIS LIST
@@ -33,10 +33,12 @@ var shapes = [ ]; //TALHA IF YOU WANT YOUR SHAPES TO BE RENDERED YOU NEED TO PUT
 // shapes.push( cone1);
 // shapes.push( cube1);
 
-
-shapes.push( new Sphere( vec4( -1.5, 0, 2, 0), 0.5) );
-shapes.push( new Sphere( vec4( 2, 0, -2, 0), 1) );
-shapes.push( new Sphere( vec4( -1, 0, -2, 0), 0.5) );
+var sphere1 = new Sphere( vec4( -1.5, 0, 2, 0), 0.5);
+var sphere2 = new Sphere( vec4( 2, 0, -2, 0), 1);
+var sphere3 = new Sphere( vec4( -1, 0, -2, 0), 0.5);
+shapes.push( sphere1 );
+shapes.push( sphere2 );
+shapes.push( sphere3 );
 var refractiveSphere = new Sphere( vec4( 0, 1, 0, 0), 1);
 refractiveSphere.material = new Material( MaterialTypes.refractandreflect, vec4( 1, 0, 1, 1), 1.5);
 console.log( "SPHERE MATERIAL");
@@ -219,6 +221,8 @@ window.onload = function init() {
     {
         var raycaster = new RayCaster();
         raycaster.castRays();
+        plane1.raycastImage = raycaster.pixelList;
+        plane1.configureImage();
     };
     
     gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),

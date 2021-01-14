@@ -14,6 +14,7 @@ function Plane( center = vec3(0, 0, 0), side = 1)
         vec2(0, 1)
     ];
     this.normal = 0;
+    this.raycastImage = null
 
     // other details such as material, color etc.
     this.color = vec4( 1.0, 1.0, 1.0, 1.0);
@@ -97,23 +98,26 @@ function Plane( center = vec3(0, 0, 0), side = 1)
     // --------- WHEN YOU ARE SURE YOU PASS CORRECT PIXEL ARRAY FORMAT,
     // YOU CAN DELETE BELOW, PASS YOUR PIXEL ARRAY AS A PARAMETER TO MAP CANVAS FUNCTION
     // AND NEED TO CHANGE THE ARR2 NAMES INSIDE THE FUNCTION WITH THE PARAMETERS
-    var arr = new Array()
-    for (var i =0; i<512; i++)  arr[i] = new Array();
-    for (var i =0; i<512; i++) 
-        for ( var j = 0; j < 512; j++) 
-        arr[i][j] = new Float32Array(4);
-    for (var i =0; i<512; i++) for (var j=0; j<512; j++) {
-        arr[i][j] = [1, 0, 1, 1];
-    }
 
     // Convert floats to ubytes for texture
-
+    var arr = new Array()
     var arr2 = new Uint8Array(4*512*512);
+    this.configureImage = function() {
+        // for (var i =0; i<512; i++)  arr[i] = new Array();
+        // for (var i =0; i<512; i++) 
+        //     for ( var j = 0; j < 512; j++) 
+        //     arr[i][j] = new Float32Array(4);
+        // for (var i =0; i<512; i++) for (var j=0; j<512; j++) {
+        //     console.log(this.raycastImage[i]);
+        //     arr[i][j] = this.raycastImage[i][j][k];
+        // }
 
-    for ( var i = 0; i < 512; i++ ) 
-        for ( var j = 0; j < 512; j++ ) 
-        for(var k =0; k<4; k++) 
-                arr2[4*512*i+4*j+k] = 255*arr[i][j][k];
+        for ( var i = 0; i < 512; i++ ) 
+            for ( var j = 0; j < 512; j++ ) 
+            for(var k =0; k<4; k++) 
+                    arr2[4*512*i+4*j+k] = 255*this.raycastImage[i * 512 + j][k];
+    }
+
     
     this.mapCanvasFromRaycast = function() {
         texture = gl.createTexture();
