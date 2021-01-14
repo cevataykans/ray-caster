@@ -6,6 +6,12 @@ This project is an implementation of a very basic ray caster using WebGL and van
 
 ### Published At: [Take me to the web page!](https://cevataykans.github.io/ray-caster/ "Ray Caster")
 
+## Some Ray Cast Results
+
+![alt text](https://github.com/cevataykans/ray-caster/raw/newMaster/Shadow_On_Shape.png "Ray cast with only distant light.")
+
+![alt text](https://github.com/cevataykans/ray-caster/raw/newMaster/With_Point_Light.png "Ray cast with point lights.")
+
 ## My Contributions
 
 I was responsible for the ray caster itself. Firstly, I introduced casting rays by going from pixel coordinates to world coordinates. Next, I implemented primary rays and casted them for intersection test. Moreover, I added shapes for intersection test. Currently, the ray caster supports spheres, triangles and the infinite cone. By using triangles, any mesh can be ray casted (although it would take too long to calculate!). After ray-shape interaction test, I shaded the pixel by casting secondary rays (shadow and reflection, refraction is not supported). For this, I added 3 material types: pong, diffuse and reflective. Furthermore, I added point and distant light sources.
